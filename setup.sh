@@ -1,8 +1,8 @@
 #!/bin/bash
 
-echo "Setting up environment in Cloud"
-export G4INSTALLDIR=/home/leire/geant4-v11.1.2-install
-export G4WORKDIR=/home/leire/TOMULGAD/
-export JSONCPPDIR=/home/leire/jsoncpp/
+echo "Setting up environment in Galois"
+export G4INSTALLDIR=/home/geant4-v11.1.2-install/
+export G4WORKDIR=/home/PROTECT/PROTECTSimulator/
+export JSONCPPDIR=/home/jsoncpp/
 source $G4INSTALLDIR/bin/geant4.sh
 
