@@ -47,11 +47,11 @@ public:
     G4double GetYBeamPosition();
     G4double GetYBeamSigma();
     G4double GetZBeamPosition();
-    G4double GetEnergy();
+    G4double GetMomentum();
     G4int GetNStep();
-    G4double GetEnergySigma();
+    G4double GetMomentumSigma();
     G4double GetTBeamSigma();
-    G4int GetEnergyDistribution();
+    G4int GetMomentumDistribution();
     G4int GetNParticles();
     G4int GetParticleDistribution();
     G4double GetMaxOpenAngle();
@@ -76,11 +76,11 @@ private:
     G4double xBeamPosition, xBeamSigma;
     G4double yBeamPosition, yBeamSigma;
     G4double zBeamPosition;
-    G4double energy, energySigma;
+    G4double p, pSigma;
     G4double tBeamSigma;
     G4double maxOpenAngle;
     G4int nParticles, nStep;
-    G4int energyDistribution, particleDistribution;
+    G4int momentumDistribution, particleDistribution;
 
     G4double uniSizeX, uniSizeY, uniSizeZ;
     std::vector <Detector *> detectors;

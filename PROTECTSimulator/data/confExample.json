@@ -16,9 +16,9 @@
         "nStep": 20,
         "nParticles": 5,
         "nParticlesDistribution": "Constant",
-        "energy": 200,
-        "energySigma": 1,
-        "energyDistribution": "Constant",
+        "momentum": 200,
+        "momentumSigma": 1,
+        "momentumDistribution": "Constant",
         "tBeamSigma": 1
     },
     "Detectors":

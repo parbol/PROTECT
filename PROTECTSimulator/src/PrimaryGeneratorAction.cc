@@ -35,7 +35,7 @@ PrimaryGeneratorAction::PrimaryGeneratorAction(ConfigurationGeometry *myGeom_, G
     MyRndEngine = CLHEP::HepRandom::getTheEngine();
     MyRndEngine->setSeed(randomSeed_,1);
     myGauss = new CLHEP::RandGauss(MyRndEngine);
-    myPoiss = new CLHEP::RandPoiss(MyRndEngine);
+    myPoiss = new CLHEP::RandPoisson(MyRndEngine);
 
     // Create the table containing all particle names
     particleTable = G4ParticleTable::GetParticleTable();
@@ -72,7 +72,7 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
     
     G4int maxParticles;
     //Poisson
-    if(myGeom->GetParticleDistrution() == 1) {
+    if(myGeom->GetParticleDistribution() == 1) {
         maxParticles = myPoiss->fire(myGeom->GetNParticles());
     } else{
         maxParticles = myGeom->GetNParticles();
@@ -80,18 +80,17 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
     
     for ( unsigned j=0; j< maxParticles; j++) {
         
-	    particleGun->SetParticleDefinition(fProton);
-	    G4double mass = particleGun->GetParticleDefinition()->GetPDGMass() * CLHEP::MeV;
-        G4double energy; 
+	particleGun->SetParticleDefinition(fProton);
+	G4double mass = particleGun->GetParticleDefinition()->GetPDGMass() * CLHEP::MeV;
+        G4double p; 
         //Gauss
-        if(myGeom->GetEnergyDistrution() == 2) {
-            energy = myGauss->fire(myGeom->GetEnergy(), myGeom->GetEnergySigma()) * CLHEP::MeV;
+        if(myGeom->GetMomentumDistribution() == 2) {
+            p = myGauss->fire(myGeom->GetMomentum(), myGeom->GetMomentumSigma()) * CLHEP::MeV;
         } else{
-            energy = myGeom->GetEnergy() * CLHEP::MeV;
+            p = myGeom->GetMomentum() * CLHEP::MeV;
         }
-        G4double p = std::sqrt(energy*energy - mass * mass);
-        G4cout << "Momentum: " << pt << "; mass " << mass << G4endl;
-    	particleGun->SetParticleEnergy(std::sqrt(pt*pt + mass*mass)*CLHEP::MeV);
+        G4double e = std::sqrt(p * p + mass * mass);
+    	particleGun->SetParticleEnergy(e);
 	
         G4double x = myGauss->fire(myGeom->GetXBeamPosition(), myGeom->GetXBeamSigma()) * CLHEP::cm;
         G4double y = myGauss->fire(myGeom->GetYBeamPosition(), myGeom->GetYBeamSigma()) * CLHEP::cm;

@@ -35,7 +35,7 @@ private:
     G4long randomSeed;
     CLHEP::HepRandomEngine* MyRndEngine;
     CLHEP::RandGauss* myGauss;
-    CLHEP::RandPoiss* myPoiss;
+    CLHEP::RandPoisson* myPoiss;
     G4double step;
     G4double vx, vy, vz;
 };

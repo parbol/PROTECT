@@ -74,8 +74,8 @@ ConfigurationGeometry::ConfigurationGeometry(G4String file) {
         yBeamPosition = atof(root["theBeam"]["yBeamPosition"].asString().c_str());
         yBeamSigma = atof(root["theBeam"]["yBeamSigma"].asString().c_str());    
         zBeamPosition = atof(root["theBeam"]["zBeamPosition"].asString().c_str());
-        energy = atof(root["theBeam"]["energy"].asString().c_str());
-        energySigma = atof(root["theBeam"]["energySigma"].asString().c_str());
+        p = atof(root["theBeam"]["momentum"].asString().c_str());
+        pSigma = atof(root["theBeam"]["momentumSigma"].asString().c_str());
         tBeamSigma = atof(root["theBeam"]["tBeamSigma"].asString().c_str());
         maxOpenAngle = atof(root["theBeam"]["maxOpenAngle"].asString().c_str());
         nParticles = atoi(root["theBeam"]["nParticles"].asString().c_str());
@@ -86,9 +86,9 @@ ConfigurationGeometry::ConfigurationGeometry(G4String file) {
             particleDistribution = 0;
         }
         if(root["theBeam"]["nParticles"].asString().find("Gauss") != -1) {
-            energyDistribution = 2;
+            momentumDistribution = 2;
         } else {
-            energyDistribution = 0;
+            momentumDistribution = 0;
         }
 
         //Definition of the Detectors ----------------------------------------------
@@ -278,8 +278,8 @@ G4double ConfigurationGeometry::GetZBeamPosition() {
 //----------------------------------------------------------------------//
 // Accesor to class information                                         //
 //----------------------------------------------------------------------//
-G4double ConfigurationGeometry::GetEnergy() {
-    return energy;
+G4double ConfigurationGeometry::GetMomentum() {
+    return p;
 }
 //----------------------------------------------------------------------//
 //----------------------------------------------------------------------//
@@ -288,8 +288,8 @@ G4double ConfigurationGeometry::GetEnergy() {
 //----------------------------------------------------------------------//
 // Accesor to class information                                         //
 //----------------------------------------------------------------------//
-G4double ConfigurationGeometry::GetEnergySigma() {
-    return energySigma;
+G4double ConfigurationGeometry::GetMomentumSigma() {
+    return pSigma;
 }
 //----------------------------------------------------------------------//
 //----------------------------------------------------------------------//
@@ -338,8 +338,8 @@ G4int ConfigurationGeometry::GetNStep() {
 //----------------------------------------------------------------------//
 // Accesor to class information                                         //
 //----------------------------------------------------------------------//
-G4int ConfigurationGeometry::GetEnergyDistribution() {
-    return energyDistribution;
+G4int ConfigurationGeometry::GetMomentumDistribution() {
+    return momentumDistribution;
 }
 //----------------------------------------------------------------------//
 //----------------------------------------------------------------------//
@@ -353,19 +353,6 @@ G4int ConfigurationGeometry::GetParticleDistribution() {
 }
 //----------------------------------------------------------------------//
 //----------------------------------------------------------------------//
-
-
-//----------------------------------------------------------------------//
-// Accesor to class information                                         //
-//----------------------------------------------------------------------//
-G4int ConfigurationGeometry::GetNParticles() {
-    return nParticles;
-}
-//----------------------------------------------------------------------//
-//----------------------------------------------------------------------//
-
-
-
 
 
 //----------------------------------------------------------------------//
