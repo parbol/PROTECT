@@ -85,7 +85,7 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
         G4double energy; 
         //Gauss
         if(myGeom->GetEnergyDistrution() == 2) {
-            energy = myGauss->(myGeom->GetEnergy()) * CLHEP::MeV;
+            energy = myGauss->fire(myGeom->GetEnergy(), myGeom->GetEnergySigma()) * CLHEP::MeV;
         } else{
             energy = myGeom->GetEnergy() * CLHEP::MeV;
         }

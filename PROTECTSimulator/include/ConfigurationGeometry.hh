@@ -44,6 +44,17 @@ public:
     // Informatio about the BEAM
     G4double GetXBeamPosition();
     G4double GetXBeamSigma();
+    G4double GetYBeamPosition();
+    G4double GetYBeamSigma();
+    G4double GetZBeamPosition();
+    G4double GetEnergy();
+    G4int GetNStep();
+    G4double GetEnergySigma();
+    G4double GetTBeamSigma();
+    G4int GetEnergyDistribution();
+    G4int GetNParticles();
+    G4int GetParticleDistribution();
+    G4double GetMaxOpenAngle();
 
 
     // Detector information
@@ -61,6 +72,16 @@ public:
     void Print();
 
 private:
+
+    G4double xBeamPosition, xBeamSigma;
+    G4double yBeamPosition, yBeamSigma;
+    G4double zBeamPosition;
+    G4double energy, energySigma;
+    G4double tBeamSigma;
+    G4double maxOpenAngle;
+    G4int nParticles, nStep;
+    G4int energyDistribution, particleDistribution;
+
     G4double uniSizeX, uniSizeY, uniSizeZ;
     std::vector <Detector *> detectors;
     bool goodGeometry;

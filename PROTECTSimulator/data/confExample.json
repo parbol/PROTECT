@@ -17,6 +17,7 @@
         "nParticles": 5,
         "nParticlesDistribution": "Constant",
         "energy": 200,
+        "energySigma": 1,
         "energyDistribution": "Constant",
         "tBeamSigma": 1
     },
