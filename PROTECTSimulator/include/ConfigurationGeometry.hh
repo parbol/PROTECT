@@ -40,9 +40,12 @@ public:
     G4double getSizeX();
     G4double getSizeY();
     G4double getSizeZ();
-    G4double getZOffsetCRY();
-    G4double getSizeBoxCRY();
    
+    // Informatio about the BEAM
+    G4double GetXBeamPosition();
+    G4double GetXBeamSigma();
+
+
     // Detector information
     Detector *getDetector(G4int);
     G4int getNDetectors();
@@ -59,7 +62,6 @@ public:
 
 private:
     G4double uniSizeX, uniSizeY, uniSizeZ;
-    G4double zOffsetCRY, sizeBoxCRY;
     std::vector <Detector *> detectors;
     bool goodGeometry;
     LGADSignalShape *signalShape;

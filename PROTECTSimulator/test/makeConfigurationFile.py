@@ -29,6 +29,8 @@ if __name__=='__main__':
     layer = detector['Layers'][0]
     sensor = layer['Sensors'][0]
 
+    theWorld["zSizeWorld"] = 250
+    
     sensors = []
     for isensor in range(0, nSensors):
         copysens = sensor.copy()

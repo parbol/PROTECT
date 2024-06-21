@@ -12,18 +12,30 @@ using namespace std;
 
 
 
+
+
 //----------------------------------------------------------------------//
 // Constructor                                                          //
 //----------------------------------------------------------------------//
 PrimaryGeneratorAction::PrimaryGeneratorAction(ConfigurationGeometry *myGeom_, G4long randomSeed_, G4double pt_) {
 
     myGeom = myGeom_;
-    randomSeed = randomSeed_;
-    pt = pt_;
-
+    randomSeed = randomSeed_;  
+    
     G4String particleName;
     particleGun = new G4ParticleGun();
-    timeSimulated=0.0;
+
+    //Information of the beam    
+    timeSimulated = 0.0;
+    vx = -myGeom->GetMaxOpenAngle();
+    vy = -myGeom->GetMaxOpenAngle();
+    vz = -1.0;
+    step = 2.0 * myGeom->GetMaxOpenAngle() / (G4double) myGeom->GetNStep();
+    
+    MyRndEngine = CLHEP::HepRandom::getTheEngine();
+    MyRndEngine->setSeed(randomSeed_,1);
+    myGauss = new CLHEP::RandGauss(MyRndEngine);
+    myPoiss = new CLHEP::RandPoiss(MyRndEngine);
 
     // Create the table containing all particle names
     particleTable = G4ParticleTable::GetParticleTable();
@@ -33,6 +45,7 @@ PrimaryGeneratorAction::PrimaryGeneratorAction(ConfigurationGeometry *myGeom_, G
 
     // Create the messenger file
     gunMessenger = new PrimaryGeneratorMessenger(this);
+
 }
 //----------------------------------------------------------------------//
 //----------------------------------------------------------------------//
@@ -56,47 +69,49 @@ PrimaryGeneratorAction::~PrimaryGeneratorAction() {
 void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
 
     G4String particleName;
-    G4int maxParticles = 5;
-
-    G4cout << "Hey youuuuuu" << G4endl;
-
-    G4double xmin = -1.0;
-    G4double xmax = 1.0;
-    G4double step = (xmax-xmin)/maxParticles;
+    
+    G4int maxParticles;
+    //Poisson
+    if(myGeom->GetParticleDistrution() == 1) {
+        maxParticles = myPoiss->fire(myGeom->GetNParticles());
+    } else{
+        maxParticles = myGeom->GetNParticles();
+    }
+    
     for ( unsigned j=0; j< maxParticles; j++) {
         
+	    particleGun->SetParticleDefinition(fProton);
+	    G4double mass = particleGun->GetParticleDefinition()->GetPDGMass() * CLHEP::MeV;
+        G4double energy; 
+        //Gauss
+        if(myGeom->GetEnergyDistrution() == 2) {
+            energy = myGauss->(myGeom->GetEnergy()) * CLHEP::MeV;
+        } else{
+            energy = myGeom->GetEnergy() * CLHEP::MeV;
+        }
+        G4double p = std::sqrt(energy*energy - mass * mass);
+        G4cout << "Momentum: " << pt << "; mass " << mass << G4endl;
+    	particleGun->SetParticleEnergy(std::sqrt(pt*pt + mass*mass)*CLHEP::MeV);
 	
-        particleGun->SetParticleDefinition(fProton);
-	G4double mass = particleGun->GetParticleDefinition()->GetPDGMass();
-        G4double pt = 2000;
-	G4cout << "Momentum: " << pt << "; mass " << mass << G4endl;
-	particleGun->SetParticleEnergy(std::sqrt(pt*pt + mass*mass)*CLHEP::MeV);
-	G4double x = (xmin + step * j)*CLHEP::cm;
-	G4double y = 0.0*CLHEP::cm;
-	G4double z = 120.0*CLHEP::cm;
+        G4double x = myGauss->fire(myGeom->GetXBeamPosition(), myGeom->GetXBeamSigma()) * CLHEP::cm;
+        G4double y = myGauss->fire(myGeom->GetYBeamPosition(), myGeom->GetYBeamSigma()) * CLHEP::cm;
+        G4double z = myGeom->GetZBeamPosition() * CLHEP::cm;     
+        G4double t = myGauss->fire(0.0, myGeom->GetTBeamSigma()) * CLHEP::ns; //cuidado con las unidades
 
+        particleGun->SetParticlePosition(G4ThreeVector(x, y, z));
+        particleGun->SetParticleMomentumDirection(G4ThreeVector(vx, vy, vz));
+        particleGun->SetParticleTime(t);
+        particleGun->GeneratePrimaryVertex(anEvent);
+    }
 
-        std::list<float> Xaxis;
-        for (float i = -15; i = 15; ++i){
-            Xaxis.push_back(i);
-        }
-        std::list<float> Yaxis;
-        for (float i = -15; i = 15; ++i){
-            Yaxis.push_back(i);
-        }
-
-        for (auto itery = Yaxis.begin(); itery != Yaxis.end(); ++itery){
-            for (auto iterx = Xaxis.begin(); iterx != Xaxis.end(); ++iterx){
-            
-	        G4double vx = *iterx/135;
-	        G4double vy = *itery/135;
-	        G4double vz = -1.0;
-                G4double t = 0;
-                particleGun->SetParticlePosition(G4ThreeVector(x, y, z));
-                particleGun->SetParticleMomentumDirection(G4ThreeVector(vx, vy, vz));
-                particleGun->SetParticleTime(t);
-                particleGun->GeneratePrimaryVertex(anEvent);
-            }
+    if(vx < myGeom->GetMaxOpenAngle()) {
+        vx = vx + step;
+    } else {
+        vx = -myGeom->GetMaxOpenAngle();
+        if(vy < myGeom->GetMaxOpenAngle()) {
+            vy = vy + step;
+        } else {
+            vy = -myGeom->GetMaxOpenAngle();
         }
     }
 }

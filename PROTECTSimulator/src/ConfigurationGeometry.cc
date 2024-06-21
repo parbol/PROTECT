@@ -57,8 +57,6 @@ ConfigurationGeometry::ConfigurationGeometry(G4String file) {
         G4double xSize = atof(root["theWorld"]["xSizeWorld"].asString().c_str());
         G4double ySize = atof(root["theWorld"]["ySizeWorld"].asString().c_str());
         G4double zSize = atof(root["theWorld"]["zSizeWorld"].asString().c_str());
-        G4double zOffsetCRY_ = atof(root["theWorld"]["zOffsetCRY"].asString().c_str());
-        G4double sizeBoxCRY_ = atof(root["theWorld"]["sizeBoxCRY"].asString().c_str());
 
         if(xSize <= 0 || ySize <= 0|| zSize <= 0) {
             G4cerr << "\033[1;31m" << "The size of the Universe has been greater than 0" << "\033[0m" << G4endl;
@@ -66,23 +64,9 @@ ConfigurationGeometry::ConfigurationGeometry(G4String file) {
             return;
         }
 
-        if(zOffsetCRY_ < 0) {
-            G4cerr << "\033[1;31m" << "Cry should be producing muons above the surface" << "\033[0m" << G4endl;
-            goodGeometry = false;
-            return;
-        }
-
-        if(sizeBoxCRY_ <= 0) {
-            G4cerr << "\033[1;31m" << "Cry should have a positive size of production" << "\033[0m" << G4endl;
-            goodGeometry = false;
-            return;
-        }
-
         uniSizeX = xSize * CLHEP::cm;
         uniSizeY = ySize * CLHEP::cm;
         uniSizeZ = zSize * CLHEP::cm;
-        zOffsetCRY = zOffsetCRY_ * CLHEP::cm;
-        sizeBoxCRY = sizeBoxCRY_ * CLHEP::cm;
 
         //Definition of the Detectors ----------------------------------------------
         const Json::Value Detectors = root["Detectors"];
@@ -203,26 +187,6 @@ G4double ConfigurationGeometry::getSizeY() {
 //----------------------------------------------------------------------//
 G4double ConfigurationGeometry::getSizeZ() {
     return uniSizeZ;
-}
-//----------------------------------------------------------------------//
-//----------------------------------------------------------------------//
-
-
-//----------------------------------------------------------------------//
-// Accesor to class information                                         //
-//----------------------------------------------------------------------//
-G4double ConfigurationGeometry::getZOffsetCRY() {
-    return zOffsetCRY;
-}
-//----------------------------------------------------------------------//
-//----------------------------------------------------------------------//
-
-
-//----------------------------------------------------------------------//
-// Accesor to class information                                         //
-//----------------------------------------------------------------------//
-G4double ConfigurationGeometry::getSizeBoxCRY() {
-    return sizeBoxCRY;
 }
 //----------------------------------------------------------------------//
 //----------------------------------------------------------------------//

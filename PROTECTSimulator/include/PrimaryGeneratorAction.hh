@@ -33,8 +33,11 @@ private:
     PrimaryGeneratorMessenger* gunMessenger;
     ConfigurationGeometry *myGeom;
     G4long randomSeed;
-    G4double pt;
-
+    CLHEP::HepRandomEngine* MyRndEngine;
+    CLHEP::RandGauss* myGauss;
+    CLHEP::RandPoiss* myPoiss;
+    G4double step;
+    G4double vx, vy, vz;
 };
 
 #endif

@@ -3,9 +3,22 @@
     {
         "xSizeWorld":100,
         "ySizeWorld":100,
-        "zSizeWorld":100,
-        "zOffsetCRY":50,
-        "sizeBoxCRY":100
+        "zSizeWorld":100
+    },
+    "theBeam":
+    {
+        "xBeamPosition": 0,
+        "xBeamSigma": 0.1,
+        "yBeamPosition": 0,
+        "yBeamSigma": 0.1,
+        "zBeamPosition": 125,
+        "maxOpenAngle": 0.12,
+        "nStep": 20,
+        "nParticles": 5,
+        "nParticlesDistribution": "Constant",
+        "energy": 200,
+        "energyDistribution": "Constant",
+        "tBeamSigma": 1
     },
     "Detectors":
     [
