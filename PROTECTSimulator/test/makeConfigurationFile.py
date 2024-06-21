@@ -25,6 +25,7 @@ if __name__=='__main__':
         data_ = json.load(f)
     
     theWorld = data_['theWorld']
+    theBeam = data_['theBeam']
     detector = data_['Detectors'][0]
     layer = detector['Layers'][0]
     sensor = layer['Sensors'][0]
@@ -50,6 +51,7 @@ if __name__=='__main__':
 
     data = {} 
     data['theWorld'] = theWorld
+    data['theBeam'] = theBeam
     data['Detectors'] = detectors
 
     
