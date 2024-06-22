@@ -42,8 +42,10 @@ private:
     G4double toa;
     G4double tot;
     G4double energy;
+    G4double genEnergy;
     G4int padx;
     G4int pady;
+    G4int genID;
     G4ThreeVector localPos;
     G4ThreeVector globalPos;
     
@@ -114,6 +116,21 @@ public:
     }
     inline G4double GetEnergy() const {
         return energy;
+    }
+    inline void SetGenEnergy(G4double e) {
+        genEnergy = e;
+    }
+    inline G4double GetGenEnergy() const {
+        return genEnergy;
+    }
+    inline void SetGenID(G4int a) {
+        genID = a;
+    }
+    inline G4int GetGenID() {
+        return genID;
+    }
+    inline G4double GetGenEnergy() const {
+        return genEnergy;
     }
     inline void SetLocalPos(G4ThreeVector xyz) {
         localPos = xyz;

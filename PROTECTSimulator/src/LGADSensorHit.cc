@@ -56,6 +56,8 @@ LGADSensorHit::LGADSensorHit(const LGADSensorHit &right): G4VHit() {
     pady = right.pady;
     localPos = right.localPos;
     globalPos = right.globalPos;
+    genEnergy = right.genEnergy;
+    genID = right.genID; 
 }
 //----------------------------------------------------------------------//
 //----------------------------------------------------------------------//
@@ -78,6 +80,8 @@ const LGADSensorHit& LGADSensorHit::operator=(const LGADSensorHit &right) {
     pady = right.pady;
     localPos = right.localPos;
     globalPos = right.globalPos;
+    genEnergy = right.genEnergy;
+    genID = right.genID;
     return *this;
 }
 //----------------------------------------------------------------------//

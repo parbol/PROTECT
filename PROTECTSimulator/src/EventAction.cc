@@ -102,7 +102,6 @@ void EventAction::EndOfEventAction(const G4Event* evt) {
                     auto sh = geom->getDetector(aHit->GetDetectorID())->GetLayer(aHit->GetLayerID())->GetSensor(aHit->GetLGADID())->signalShape();
                     LGADDigi *digi = new LGADDigi(aHit,
                     geom->getDetector(aHit->GetDetectorID())->GetLayer(aHit->GetLayerID())->GetSensor(aHit->GetLGADID())->signalShape());
-
                     auto it = digis.find(digi->hitID);
                     if(it == digis.end()) {
                         digis.insert(std::make_pair(digi->hitID, digi));
@@ -132,6 +131,8 @@ void EventAction::EndOfEventAction(const G4Event* evt) {
             man->FillNtupleDColumn(11, i->second->genX/CLHEP::cm);
             man->FillNtupleDColumn(12, i->second->genY/CLHEP::cm);
             man->FillNtupleDColumn(13, i->second->genZ/CLHEP::cm);
+            man->FillNtupleDColumn(14, i->second->genEnergy/CLHEP::MeV);
+            man->FillNtupleIColumn(15, i->second->genID);
             man->AddNtupleRow(); 
         }
     }
