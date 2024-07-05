@@ -1,17 +1,13 @@
 #include <iomanip>
 #include "PrimaryGeneratorAction.hh"
-#include "Beam.hh"
 #include <sstream>
 #include <sys/time.h>
 #include <iostream>
 #include <list>
 
-
 #include "G4Event.hh"
 
 using namespace std;
-
-
 
 
 
@@ -28,7 +24,7 @@ PrimaryGeneratorAction::PrimaryGeneratorAction(ConfigurationGeometry *myGeom_, G
     G4String particleName;
     particleGun = new G4ParticleGun();
     MyRndEngine = CLHEP::HepRandom::getTheEngine();
-    MyRndEngine->SetSeed(randomSeed);
+    MyRndEngine->setSeed(randomSeed, 1);
     // Create the table containing all particle names
     particleTable = G4ParticleTable::GetParticleTable();
     fProton = particleTable->FindParticle(particleName="proton");
@@ -36,7 +32,7 @@ PrimaryGeneratorAction::PrimaryGeneratorAction(ConfigurationGeometry *myGeom_, G
     particleGun->SetParticleDefinition(fProton);
 
     //Beam
-    Beam *beam = Beam(myGeom, MyRndEngine);
+    beam = new Beam(myGeom, MyRndEngine);
 
     // Create the messenger file
     gunMessenger = new PrimaryGeneratorMessenger(this);
@@ -71,8 +67,9 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
         particleGun->SetParticlePosition(G4ThreeVector(vect[1], vect[2], vect[3]));
         particleGun->SetParticleTime(vect[4]);
         particleGun->SetParticleMomentumDirection(G4ThreeVector(vect[5], vect[6], vect[7]));
-
         particleGun->GeneratePrimaryVertex(anEvent);
+
+        
     }
 
     beam->updateBeam();

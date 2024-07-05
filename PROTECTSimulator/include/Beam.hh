@@ -1,5 +1,5 @@
-#ifndef LGAD_h
-#define LGAD_h 1
+#ifndef Beam_h
+#define Beam_h 1
 
 #include "Randomize.hh"
 #include "ConfigurationGeometry.hh"
@@ -12,6 +12,7 @@ public:
     Beam(ConfigurationGeometry *, CLHEP::HepRandomEngine*);
     std::vector<G4double> fireParticle();
     void updateBeam();
+    G4int GetNParticles();
 
 private:
  
@@ -22,6 +23,7 @@ private:
 
     G4double vx, vy, vz;
     G4double step;
+    G4int debug;
 };
 
 

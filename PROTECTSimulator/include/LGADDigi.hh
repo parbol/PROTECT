@@ -33,7 +33,8 @@ public:
     G4double genTOT;
     G4double charge;
     G4double genX, genY, genZ;
-
+    G4double genEnergy;
+    G4int genID;
     LGADSignalShape *signalShape;
 
 };

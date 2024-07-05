@@ -12,6 +12,7 @@
 #include "vector"
 #include "RNGWrapper.hh"
 #include "PrimaryGeneratorMessenger.hh"
+#include "Beam.hh"
 
 class G4Event;
 
@@ -38,6 +39,7 @@ private:
     CLHEP::RandPoisson* myPoiss;
     G4double step;
     G4double vx, vy, vz;
+    Beam *beam;
 };
 
 #endif

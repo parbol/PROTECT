@@ -6,7 +6,7 @@
 Beam::Beam(ConfigurationGeometry *g, CLHEP::HepRandomEngine* MyRndEngine_) {
 
     myGeom = g;
-    
+    debug = 1;
     //Information of the beam    
     vx = -myGeom->GetMaxOpenAngle();
     vy = -myGeom->GetMaxOpenAngle();
@@ -66,6 +66,10 @@ std::vector<G4double> Beam::fireParticle() {
     vect.push_back(vy);
     vect.push_back(vz);      
 
+    if(debug) {
+        G4cout << "Gen Particle x: " << x/CLHEP::cm << " cm, y: " << y/CLHEP::cm << " cm, z: " << z/CLHEP::cm << " cm, vx: " << vx << ", vy: " << vy << ", vz: " << vz << ", p: " << p/CLHEP::MeV << G4endl;
+    } 
+    
     return vect;
 
 }

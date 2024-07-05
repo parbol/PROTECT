@@ -74,7 +74,7 @@ G4bool LGADSensor::ProcessHits(G4Step*aStep,G4TouchableHistory*  /*ROhist*/) {
     G4double g = std::get<2>(val);
     G4double energy = g * aStep->GetTotalEnergyDeposit();
     G4double genEnergy = aStep->GetPreStepPoint()->GetTotalEnergy();
-    G4int genID = aStep->getTrack()->GetParticleDefinition()->GetPDGEncoding();
+    G4int genID = aStep->GetTrack()->GetParticleDefinition()->GetPDGEncoding();
 
     //Simulating resolution
     LGADSensorHit* aHit = new LGADSensorHit();
@@ -92,7 +92,7 @@ G4bool LGADSensor::ProcessHits(G4Step*aStep,G4TouchableHistory*  /*ROhist*/) {
     aHit->SetPady(ypad);
     aHit->SetEnergy(energy);
     aHit->SetGenEnergy(genEnergy);
-    aHit->SetGenId(genID);
+    aHit->SetGenID(genID);
 
     
     hitsCollection->insert(aHit);

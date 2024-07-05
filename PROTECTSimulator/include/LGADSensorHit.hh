@@ -129,9 +129,6 @@ public:
     inline G4int GetGenID() {
         return genID;
     }
-    inline G4double GetGenEnergy() const {
-        return genEnergy;
-    }
     inline void SetLocalPos(G4ThreeVector xyz) {
         localPos = xyz;
     }
