@@ -25,6 +25,9 @@ public:
 
     G4bool Digitize();
 
+    void Print();
+
+    G4int debug;
     G4int eventNumber;
     G4int hitID;
     G4double TOA;

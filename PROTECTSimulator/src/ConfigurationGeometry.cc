@@ -309,7 +309,7 @@ G4double ConfigurationGeometry::GetTBeamSigma() {
 // Accesor to class information                                         //
 //----------------------------------------------------------------------//
 G4double ConfigurationGeometry::GetMaxOpenAngle() {
-    return tBeamSigma;
+    return maxOpenAngle;
 }
 //----------------------------------------------------------------------//
 //----------------------------------------------------------------------//

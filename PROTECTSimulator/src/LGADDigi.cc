@@ -5,6 +5,8 @@
 //----------------------------------------------------------------------//
 LGADDigi::LGADDigi(LGADSensorHit *h, LGADSignalShape *shape) {
 
+    debug = 1;
+
     G4int det = h->GetDetectorID();
     G4int layer = h->GetLayerID();
     G4int lgad = h->GetLGADID();
@@ -93,6 +95,7 @@ G4int LGADDigi::GetPady() {
 //----------------------------------------------------------------------//
 //----------------------------------------------------------------------//
 
+
 //----------------------------------------------------------------------//
 // Digitize                                                             //
 //----------------------------------------------------------------------//
@@ -105,7 +108,9 @@ G4bool LGADDigi::Digitize() {
     if (TOA == 0 && TOT == 0) return false;
 
     //Start here with the smearing
-    
+    if(debug) {
+        Print();
+    }
 
     return true;
 }
@@ -113,3 +118,17 @@ G4bool LGADDigi::Digitize() {
 //----------------------------------------------------------------------//
   
 
+//----------------------------------------------------------------------//
+// Print Digi                                                           //
+//----------------------------------------------------------------------//
+void LGADDigi::Print() { 
+    
+    G4cout << "Printing DIGI information in event: " << eventNumber << G4endl;
+    G4cout << "Det: " << GetDet() << " Layer: " << GetLayer() << " LGAD: " << GetLGAD() << " Padx: " << GetPadx() << " Pady: " << GetPady() << G4endl;
+    G4cout << "Gen Local Pos x: " << genX/CLHEP::cm << " y: " << genY/CLHEP::cm << " z: " << genZ/CLHEP::cm << G4endl;
+    G4cout << "Gen Energy: " << genEnergy/CLHEP::MeV << " Gen TOA: " << genTOA/CLHEP::ns << " genID: " << genID << G4endl;
+    G4cout << "TOA: " << TOA/CLHEP::ns << " TOT: " << TOT/CLHEP::ns << G4endl;
+
+}
+//----------------------------------------------------------------------//
+//----------------------------------------------------------------------//
