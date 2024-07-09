@@ -103,11 +103,43 @@ G4int LGADDigi::GetPady() {
 G4bool LGADDigi::Digitize(CLHEP::RandGauss *myGauss, ConfigurationGeometry *geom) {
     
     G4double chThres = geom->getDetector(aHit->GetDetectorID())->GetLayer(aHit->GetLayerID())->GetSensor(aHit->GetLGADID())->chargethreshold();
+    if(charge < chThres) return false;
     G4double noise = geom->getDetector(aHit->GetDetectorID())->GetLayer(aHit->GetLayerID())->GetSensor(aHit->GetLGADID())->noiselevel();
     G4double tdcsigma = geom->getDetector(aHit->GetDetectorID())->GetLayer(aHit->GetLayerID())->GetSensor(aHit->GetLGADID())->tdcsigma();
 
     std::pair<G4double, G4double> a = signalShape->getTimes(charge);
     if (a.first == 0 && a.second == 0) return false;
+    
+    /*
+    double SignalToNoise = etlPulseShape_.maximum() * ((it->second).hit_info[0][i] / referenceChargeColl_) / noiseLevel_;
+    double sigmaJitter1 = etlPulseShape_.timeOfMax() / SignalToNoise;
+    double sigmaJitter2 = (etlPulseShape_.fallTime() - etlPulseShape_.timeOfMax()) / SignalToNoise;
+    //Calculate the distorsion
+    double sigmaDistorsion = sigmaDistorsion_;
+    //Calculate the TDC
+    double sigmaTDC = sigmaTDC_;
+    //Calculate the Landau Noise
+    chOverMPV[0] = (it->second).hit_info[0][i] / (it->second).hit_info[2][i];
+    double sigmaLN = formulaLandauNoise_.evaluate(chOverMPV, emptyV);
+    double sigmaToA = sqrt(sigmaJitter1 * sigmaJitter1 + sigmaDistorsion * sigmaDistorsion + sigmaTDC * sigmaTDC +
+                           sigmaLN * sigmaLN);
+    double sigmaToC = sqrt(sigmaJitter2 * sigmaJitter2 + sigmaDistorsion * sigmaDistorsion + sigmaTDC * sigmaTDC +
+                            sigmaLN * sigmaLN);
+    double smearing1 = 0.0;
+    double smearing2 = 0.0;
+ 
+    if (sigmaToA > 0. && sigmaToC > 0.) {
+         smearing1 = CLHEP::RandGaussQ::shoot(hre, 0., sigmaToA);
+         smearing2 = CLHEP::RandGaussQ::shoot(hre, 0., sigmaToC);
+    }
+ 
+    finalToA += smearing1;
+    finalToC += smearing1 + smearing2;
+ 
+    std::array<float, 3> times = etlPulseShape_.timeAtThr(
+        (it->second).hit_info[0][i] / referenceChargeColl_, iThreshold_MIP_, iThreshold_MIP_);
+ 
+    */
     TOA = genTOA + a.first;
     TOT = a.second;
 
