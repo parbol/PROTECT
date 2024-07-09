@@ -103,6 +103,7 @@ G4int LGADDigi::GetPady() {
 G4bool LGADDigi::Digitize(CLHEP::RandGauss *myGauss, ConfigurationGeometry *geom) {
     
     G4double chThres = geom->getDetector(aHit->GetDetectorID())->GetLayer(aHit->GetLayerID())->GetSensor(aHit->GetLGADID())->chargethreshold();
+    
     if(charge < chThres) return false;
     G4double noise = geom->getDetector(aHit->GetDetectorID())->GetLayer(aHit->GetLayerID())->GetSensor(aHit->GetLGADID())->noiselevel();
     G4double tdcsigma = geom->getDetector(aHit->GetDetectorID())->GetLayer(aHit->GetLayerID())->GetSensor(aHit->GetLGADID())->tdcsigma();
