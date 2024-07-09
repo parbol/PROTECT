@@ -126,9 +126,7 @@ G4bool LGADDigi::Digitize(CLHEP::RandGauss *myGauss, ConfigurationGeometry *geom
                            sigmaLN * sigmaLN);
     G4double sigmaToC = sqrt(sigmaJitter2 * sigmaJitter2 + sigmaDistorsion * sigmaDistorsion + sigmaTDC * sigmaTDC +
                             sigmaLN * sigmaLN);
-    G4double smearing1 = 0.0;
-    G4double smearing2 = 0.0;
- 
+    
     G4double smearing1 = myGauss->fire(0., sigmaToA);
     G4double smearing2 = myGauss->fire(0., sigmaToC);   
  
