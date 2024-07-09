@@ -56,7 +56,7 @@
                             "zDirSensor":0,
                             "xSizeSensor":2.5,
                             "ySizeSensor":2.5,
-                            "zSizeSensor":1.0,
+                            "zSizeSensor":0.03,
                             "interPadx":0.05,
                             "interPady":0.05,
                             "xborder":0.005,
