@@ -1,7 +1,7 @@
 #include "LGADSignalShape.hh"
 #include <array>
 
-#define qNSecPerBin 1.0/200.0
+#define qNSecPerBin 0.01
 
 
 //----------------------------------------------------------------------//
@@ -15,6 +15,7 @@ LGADSignalShape::LGADSignalShape(G4double thres) {
     for(G4int i = 1; i < sizeof(signalShape)/sizeof(G4double); i++) {      
         if(signalShape[i] < signalShape[i-1]) {
             maxN = i-1;
+            break;
         }
     }
     maxValue = signalShape[maxN];
@@ -80,7 +81,7 @@ std::pair<G4double, G4double> LGADSignalShape::getTimes(G4double charge) {
             break;
         }
     }
-    mypair = std::make_pair(iArrival, iEnd-iArrival);
+    mypair = std::make_pair(iArrival*qNSecPerBin, (iEnd-iArrival)*qNSecPerBin);
     return mypair;
 }
 
