@@ -110,42 +110,32 @@ G4bool LGADDigi::Digitize(CLHEP::RandGauss *myGauss, ConfigurationGeometry *geom
     std::pair<G4double, G4double> a = signalShape->getTimes(charge);
     if (a.first == 0 && a.second == 0) return false;
     
-    /*
-    double SignalToNoise = etlPulseShape_.maximum() * ((it->second).hit_info[0][i] / referenceChargeColl_) / noiseLevel_;
-    double sigmaJitter1 = etlPulseShape_.timeOfMax() / SignalToNoise;
-    double sigmaJitter2 = (etlPulseShape_.fallTime() - etlPulseShape_.timeOfMax()) / SignalToNoise;
-    //Calculate the distorsion
-    double sigmaDistorsion = sigmaDistorsion_;
-    //Calculate the TDC
-    double sigmaTDC = sigmaTDC_;
-    //Calculate the Landau Noise
-    chOverMPV[0] = (it->second).hit_info[0][i] / (it->second).hit_info[2][i];
-    double sigmaLN = formulaLandauNoise_.evaluate(chOverMPV, emptyV);
-    double sigmaToA = sqrt(sigmaJitter1 * sigmaJitter1 + sigmaDistorsion * sigmaDistorsion + sigmaTDC * sigmaTDC +
-                           sigmaLN * sigmaLN);
-    double sigmaToC = sqrt(sigmaJitter2 * sigmaJitter2 + sigmaDistorsion * sigmaDistorsion + sigmaTDC * sigmaTDC +
-                            sigmaLN * sigmaLN);
-    double smearing1 = 0.0;
-    double smearing2 = 0.0;
- 
-    if (sigmaToA > 0. && sigmaToC > 0.) {
-         smearing1 = CLHEP::RandGaussQ::shoot(hre, 0., sigmaToA);
-         smearing2 = CLHEP::RandGaussQ::shoot(hre, 0., sigmaToC);
-    }
- 
-    finalToA += smearing1;
-    finalToC += smearing1 + smearing2;
- 
-    std::array<float, 3> times = etlPulseShape_.timeAtThr(
-        (it->second).hit_info[0][i] / referenceChargeColl_, iThreshold_MIP_, iThreshold_MIP_);
- 
-    */
-    TOA = genTOA + a.first;
-    TOT = a.second;
-
-
-
+    G4double SignalToNoise = signal->maximum() * charge / noise;
+    G4double sigmaJitter1 = signal->timeOfMax() / SignalToNoise;
+    G4double sigmaJitter2 = (signal->fallTime() - signal->timeOfMax()) / SignalToNoise;
     
+    //Calculate the distorsion: No distorsion at this point
+    G4double sigmaDistorsion = 0.0;
+    
+    //Calculate the Landau Noise
+    //chOverMPV[0] = (it->second).hit_info[0][i] / (it->second).hit_info[2][i];
+    //double sigmaLN = formulaLandauNoise_.evaluate(chOverMPV, emptyV);
+    G4double sigmaLN = 0.010;
+    
+    G4double sigmaToA = sqrt(sigmaJitter1 * sigmaJitter1 + sigmaDistorsion * sigmaDistorsion + sigmaTDC * sigmaTDC +
+                           sigmaLN * sigmaLN);
+    G4double sigmaToC = sqrt(sigmaJitter2 * sigmaJitter2 + sigmaDistorsion * sigmaDistorsion + sigmaTDC * sigmaTDC +
+                            sigmaLN * sigmaLN);
+    G4double smearing1 = 0.0;
+    G4double smearing2 = 0.0;
+ 
+    G4double smearing1 = myGauss->fire(0., sigmaToA);
+    G4double smearing2 = myGauss->fire(0., sigmaToC);   
+ 
+    TOA = genTOA + a.first + smearing1; 
+    TOT = a.second + smearing2 - smearing1;
+    if (TOT < 0) return false; 
+   
     //Start here with the smearing
     if(debug) {
         Print();

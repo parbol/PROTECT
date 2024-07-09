@@ -1,6 +1,7 @@
 #include "LGADSignalShape.hh"
 #include <array>
 
+#define qNSecPerBin 1.0/200.0
 
 
 //----------------------------------------------------------------------//
@@ -9,15 +10,50 @@
 LGADSignalShape::LGADSignalShape(G4double thres) {
 
     threshold = thres;
-       
-    for(G4int i = 1; i < sizeof(signalShape)/sizeof(G4double); i++) {
+
+    //Estimate the time and value of the maximum
+    for(G4int i = 1; i < sizeof(signalShape)/sizeof(G4double); i++) {      
+        if(signalShape[i] < signalShape[i-1]) {
+            maxN = i-1;
+        }
+    }
+    maxValue = signalShape[maxN];
+    timeMax = maxN * qNSecPerBin;
+
+    //Estimate the falling time
+    for(G4int i = 1; i < sizeof(signalShape)/sizeof(G4double); i++) { 
         if(signalShape[i] == 0 && signalShape[i-1] != 0) {
             maxN = i;
             break;
         }
     }
+    fallValue = maxN * qNSecPerBin;
 
 };
+//----------------------------------------------------------------------//
+//----------------------------------------------------------------------//
+
+
+//----------------------------------------------------------------------//
+// getMaximum value                                                     //
+//----------------------------------------------------------------------//
+G4double LGADSignalShape::maximum() {return maxValue;}
+//----------------------------------------------------------------------//
+//----------------------------------------------------------------------//
+
+
+//----------------------------------------------------------------------//
+// get Time of maximum                                                  //
+//----------------------------------------------------------------------//
+G4double LGADSignalShape::timeOfMax() {return timeMax;}
+//----------------------------------------------------------------------//
+//----------------------------------------------------------------------//
+
+
+//----------------------------------------------------------------------//
+// get falling time                                                     //
+//----------------------------------------------------------------------//
+G4double LGADSignalShape::fallTime() {return fallValue;}
 //----------------------------------------------------------------------//
 //----------------------------------------------------------------------//
 

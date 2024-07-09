@@ -9,11 +9,17 @@ public:
 
     LGADSignalShape(G4double);
     std::pair<G4double, G4double> getTimes(G4double);
+    G4double maximum();
+    G4double timeOfMax();
+    G4double fallTime();
 
 private:
 
     G4int maxN;
     G4double threshold;
+    G4double maxValue;
+    G4double fallValue;
+    G4double timeMax;
 
     static constexpr G4double signalShape[] = {
     0,
