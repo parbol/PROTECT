@@ -110,9 +110,9 @@ G4bool LGADDigi::Digitize(CLHEP::RandGauss *myGauss, ConfigurationGeometry *geom
     std::pair<G4double, G4double> a = signalShape->getTimes(charge);
     if (a.first == 0 && a.second == 0) return false;
     
-    G4double SignalToNoise = signal->maximum() * charge / noise;
-    G4double sigmaJitter1 = signal->timeOfMax() / SignalToNoise;
-    G4double sigmaJitter2 = (signal->fallTime() - signal->timeOfMax()) / SignalToNoise;
+    G4double SignalToNoise = signalShape->maximum() * charge / noise;
+    G4double sigmaJitter1 = signalShape->timeOfMax() / SignalToNoise;
+    G4double sigmaJitter2 = (signalShape->fallTime() - signalShape->timeOfMax()) / SignalToNoise;
     
     //Calculate the distorsion: No distorsion at this point
     G4double sigmaDistorsion = 0.0;
