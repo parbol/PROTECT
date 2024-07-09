@@ -122,9 +122,9 @@ G4bool LGADDigi::Digitize(CLHEP::RandGauss *myGauss, ConfigurationGeometry *geom
     //double sigmaLN = formulaLandauNoise_.evaluate(chOverMPV, emptyV);
     G4double sigmaLN = 0.010;
     
-    G4double sigmaToA = sqrt(sigmaJitter1 * sigmaJitter1 + sigmaDistorsion * sigmaDistorsion + sigmaTDC * sigmaTDC +
+    G4double sigmaToA = sqrt(sigmaJitter1 * sigmaJitter1 + sigmaDistorsion * sigmaDistorsion + tdcsigma * tdcsigma +
                            sigmaLN * sigmaLN);
-    G4double sigmaToC = sqrt(sigmaJitter2 * sigmaJitter2 + sigmaDistorsion * sigmaDistorsion + sigmaTDC * sigmaTDC +
+    G4double sigmaToC = sqrt(sigmaJitter2 * sigmaJitter2 + sigmaDistorsion * sigmaDistorsion + tdcsigma * tdcsigma +
                             sigmaLN * sigmaLN);
     
     G4double smearing1 = myGauss->fire(0., sigmaToA);
