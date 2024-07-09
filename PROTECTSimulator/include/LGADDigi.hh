@@ -1,9 +1,9 @@
 #ifndef LGADDigi_h
 #define LGADDigi_h 1
-
+#include "Randomize.hh"
 #include "LGADSensorHit.hh"
 #include "LGADSignalShape.hh"
-
+#include "ConfigurationGeometry.hh"
 #define MIPperMEV 66.667
 
 
@@ -23,7 +23,7 @@ public:
 
     G4int GetPady();
 
-    G4bool Digitize();
+    G4bool Digitize(CLHEP::RandGauss *, ConfigurationGeometry *);
 
     void Print();
 
@@ -39,6 +39,7 @@ public:
     G4double genEnergy;
     G4int genID;
     LGADSignalShape *signalShape;
+    LGADSensorHit *aHit;
 
 };
 

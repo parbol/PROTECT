@@ -5,7 +5,7 @@
 #include "G4UserEventAction.hh"
 #include "globals.hh"
 #include <vector>
-
+#include "Randomize.hh"
 #include "LGADSensorHit.hh"
 #include "ConfigurationGeometry.hh"
 #include "LGADDigi.hh"
@@ -43,6 +43,8 @@ public:
         return verboseLevel;
     }
     typedef std::vector<LGADSensorHitsCollection* > LGADSensorHitsCollections;
+    CLHEP::HepRandomEngine* MyRndEngine;
+    CLHEP::RandGauss* myGauss;
 };
 
 

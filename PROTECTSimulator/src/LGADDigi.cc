@@ -6,6 +6,7 @@
 LGADDigi::LGADDigi(LGADSensorHit *h, LGADSignalShape *shape) {
 
     debug = 1;
+    aHit = h;
 
     G4int det = h->GetDetectorID();
     G4int layer = h->GetLayerID();
@@ -99,14 +100,20 @@ G4int LGADDigi::GetPady() {
 //----------------------------------------------------------------------//
 // Digitize                                                             //
 //----------------------------------------------------------------------//
-G4bool LGADDigi::Digitize() {
+G4bool LGADDigi::Digitize(CLHEP::RandGauss *myGauss, ConfigurationGeometry *geom) {
     
-    std::pair<G4double, G4double> a = signalShape->getTimes(charge);
-    TOA = a.first;
-    TOT = a.second;
-    genTOT = TOT;
-    if (TOA == 0 && TOT == 0) return false;
+    G4double chThres = geom->getDetector(aHit->GetDetectorID())->GetLayer(aHit->GetLayerID())->GetSensor(aHit->GetLGADID())->chargethreshold();
+    G4double noise = geom->getDetector(aHit->GetDetectorID())->GetLayer(aHit->GetLayerID())->GetSensor(aHit->GetLGADID())->noiselevel();
+    G4double tdcsigma = geom->getDetector(aHit->GetDetectorID())->GetLayer(aHit->GetLayerID())->GetSensor(aHit->GetLGADID())->tdcsigma();
 
+    std::pair<G4double, G4double> a = signalShape->getTimes(charge);
+    if (a.first == 0 && a.second == 0) return false;
+    TOA = genTOA + a.first;
+    TOT = a.second;
+
+
+
+    
     //Start here with the smearing
     if(debug) {
         Print();

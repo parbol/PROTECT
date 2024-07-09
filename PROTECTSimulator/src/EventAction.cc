@@ -39,6 +39,8 @@ EventAction::EventAction(ConfigurationGeometry *geom_) {
     G4SDManager* SDman = G4SDManager::GetSDMpointer();
     G4int numberOfDetectors = SDman->GetCollectionCapacity();
     SDman->ListTree();
+    MyRndEngine = CLHEP::HepRandom::getTheEngine();
+    myGauss = new CLHEP::RandGauss(MyRndEngine);
 
     for(auto i : geom->collections) {
         DHCID.push_back(SDman->GetCollectionID(i));
@@ -100,7 +102,7 @@ void EventAction::EndOfEventAction(const G4Event* evt) {
                     auto lgadID = aHit->GetLGADID();
                     auto a = geom->getDetector(detID)->GetLayer(layerID)->GetSensor(lgadID);
                     auto sh = geom->getDetector(aHit->GetDetectorID())->GetLayer(aHit->GetLayerID())->GetSensor(aHit->GetLGADID())->signalShape();
-                    LGADDigi *digi = new LGADDigi(aHit,
+                    LGADDigi *digi = new LGADDigi(aHit, 
                     geom->getDetector(aHit->GetDetectorID())->GetLayer(aHit->GetLayerID())->GetSensor(aHit->GetLGADID())->signalShape());
                     auto it = digis.find(digi->hitID);
                     if(it == digis.end()) {
@@ -116,7 +118,7 @@ void EventAction::EndOfEventAction(const G4Event* evt) {
     }
     
     for(auto i = digis.begin(); i != digis.end(); ++i) {
-        if(i->second->Digitize()) {     
+        if(i->second->Digitize(myGauss, geom)) {     
             man->FillNtupleIColumn(0, i->second->eventNumber);
             man->FillNtupleIColumn(1, i->second->GetDet());
             man->FillNtupleIColumn(2, i->second->GetLayer());

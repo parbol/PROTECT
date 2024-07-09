@@ -14,7 +14,6 @@ Beam::Beam(ConfigurationGeometry *g, CLHEP::HepRandomEngine* MyRndEngine_) {
     step = 2.0 * myGeom->GetMaxOpenAngle() / (G4double) myGeom->GetNStep();
     MyRndEngine = MyRndEngine_;
     myGauss = new CLHEP::RandGauss(MyRndEngine);
-    myPoiss = new CLHEP::RandPoisson(MyRndEngine);
 
 }
 //----------------------------------------------------------------------//
