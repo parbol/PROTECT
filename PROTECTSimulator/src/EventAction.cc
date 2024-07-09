@@ -125,8 +125,8 @@ void EventAction::EndOfEventAction(const G4Event* evt) {
             man->FillNtupleIColumn(3, i->second->GetLGAD());
             man->FillNtupleIColumn(4, i->second->GetPadx());
             man->FillNtupleIColumn(5, i->second->GetPady());
-            man->FillNtupleDColumn(6, i->second->TOA/CLHEP::second);
-            man->FillNtupleDColumn(7, i->second->TOT/CLHEP::second);
+            man->FillNtupleDColumn(6, i->second->TOA/CLHEP::ns);
+            man->FillNtupleDColumn(7, i->second->TOT/CLHEP::ns);
             man->FillNtupleDColumn(8, i->second->charge);
             man->FillNtupleDColumn(9, i->second->genTOA/CLHEP::second);
             man->FillNtupleDColumn(10, i->second->genTOT/CLHEP::second);
