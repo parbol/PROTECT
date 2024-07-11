@@ -61,7 +61,7 @@ int main(int argc,char** argv) {
 	G4double pt = 0;
     //Options all right?
     if(!getOptions(argc, argv, nameOfInputFile, nameOfOutputFile, nameOfGeantFile, numberOfEvents, randomSeed, pt)) {
-        G4cerr << "\033[1;31m" << "Usage: ./Generator --input NameOfGeometry.json --geant4 file.g4 --output outputfile --number numberOfEvents --seed seed --pt pt"  << "\033[0m" << G4endl;
+        G4cerr << "\033[1;31m" << "Usage: ./Generator --input NameOfGeometry.json --geant file.g4 --output outputfile --number numberOfEvents --seed seed --pt pt"  << "\033[0m" << G4endl;
         return -1;
     }
 
