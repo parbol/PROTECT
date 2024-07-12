@@ -128,8 +128,8 @@ void EventAction::EndOfEventAction(const G4Event* evt) {
             man->FillNtupleDColumn(6, i->second->TOA/CLHEP::ns);
             man->FillNtupleDColumn(7, i->second->TOT/CLHEP::ns);
             man->FillNtupleDColumn(8, i->second->charge);
-            man->FillNtupleDColumn(9, i->second->genTOA/CLHEP::second);
-            man->FillNtupleDColumn(10, i->second->genTOT/CLHEP::second);
+            man->FillNtupleDColumn(9, i->second->genTOA/CLHEP::ns);
+            man->FillNtupleDColumn(10, i->second->genTOT/CLHEP::ns);
             man->FillNtupleDColumn(11, i->second->genX/CLHEP::cm);
             man->FillNtupleDColumn(12, i->second->genY/CLHEP::cm);
             man->FillNtupleDColumn(13, i->second->genZ/CLHEP::cm);

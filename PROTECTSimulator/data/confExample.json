@@ -63,7 +63,7 @@
                             "yborder":0.005,
                             "nPadx":16,
                             "nPady":16,
-                            "chargeThreshold":0.025,
+                            "chargeThreshold":0.0025,
                             "noise":0.02,
                             "tdcSigma":0.01,
                             "gain":10.0

@@ -128,7 +128,6 @@ def insert(a, b, N):
 
     for i in range(0, N):
         if i < len(b):
-            print(a[i])
             a[i] = b[i]
         else:
             a[i] = 0
@@ -201,15 +200,17 @@ if __name__ == '__main__':
     t.Branch('localgenz', localgenz, 'localgenz[nhits]/F')
 
 
-
+    h = r.TH1F('h', '', 100, -1, 1)
+    charge = r.TH1F('charge', '', 100, 0, 10)
     
-    print(events)
     for ev in events:
         nhits[0] = len(ev.det)
         if nhits[0] > Nmax:
             print('Too long event')
             continue
         nevent[0] = ev.nEvent
+        h.Fill(ev.toa[0]-ev.gentoa[0])
+        charge.Fill(ev.charge[0])
         insert(det, ev.det, Nmax)
         insert(layer, ev.layer, Nmax)
         insert(lgad, ev.lgad, Nmax)
@@ -231,6 +232,13 @@ if __name__ == '__main__':
         insert(localgeny, ev.localgeny, Nmax)
         insert(localgenz, ev.localgenz, Nmax)
         t.Fill()
+
+    c = r.TCanvas('c','c')
+    h.Draw()
+    c.SaveAs("plot.png")
+    c2 = r.TCanvas('c2','c2')
+    charge.Draw()
+    c2.SaveAs("charge.png")
     output.Write()
     output.Close()
 
