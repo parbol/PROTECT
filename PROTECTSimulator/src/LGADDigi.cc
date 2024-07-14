@@ -130,7 +130,6 @@ G4bool LGADDigi::Digitize(CLHEP::RandGauss *myGauss, ConfigurationGeometry *geom
     G4double smearing1 = myGauss->fire(0., sigmaToA);
     G4double smearing2 = myGauss->fire(0., sigmaToC);   
     TOA = genTOA + (a.first + smearing1) * CLHEP::ns; 
-    
     TOT = (a.second + smearing2 - smearing1) * CLHEP::ns;
     if (TOT < 0) return false; 
    
