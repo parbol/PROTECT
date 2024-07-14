@@ -44,7 +44,7 @@ class Event:
         self.localgeny.append(geny_)
         self.localgenz.append(genz_)
         self.genID.append(genID_)
-        x, y, z = self.geomConversor.toGlobal(det_, layer_, lgad_, xpad_, ypad_, 0.0, 0.0, 0.0)
+        x, y, z = self.geomConversor.toGlobalMeasurement(det_, layer_, lgad_, xpad_, ypad_)
         genx, geny, genz = self.geomConversor.toGlobal(det_, layer_, lgad_, xpad_, ypad_, genx_, geny_, genz_)
         self.x.append(x)
         self.y.append(y)
@@ -83,15 +83,36 @@ class GeometryConversor:
         xlgad = self.data['Detectors'][det]['Layers'][layer]['Sensors'][lgad]['xPosSensor']
         ylgad = self.data['Detectors'][det]['Layers'][layer]['Sensors'][lgad]['yPosSensor']
         zlgad = self.data['Detectors'][det]['Layers'][layer]['Sensors'][lgad]['zPosSensor']
+        
+        realx = x + xdet + xlayer + xlgad    
+        realy = y + ydet + ylayer + ylgad   
+        realz = z + zdet + zlayer + zlgad
+
+        return realx, realy, realz 
+
+    def toGlobalMeasurement(self, det, layer, lgad, xpad, ypad):
+
+        #This method is still hardcoded for a vertical detector 
+        xdet = self.data['Detectors'][det]['xPosDetector']        
+        ydet = self.data['Detectors'][det]['yPosDetector']
+        zdet = self.data['Detectors'][det]['zPosDetector']
+        xlayer = self.data['Detectors'][det]['Layers'][layer]['xPosLayer']
+        ylayer = self.data['Detectors'][det]['Layers'][layer]['yPosLayer']
+        zlayer = self.data['Detectors'][det]['Layers'][layer]['zPosLayer']
+        xlgad = self.data['Detectors'][det]['Layers'][layer]['Sensors'][lgad]['xPosSensor']
+        ylgad = self.data['Detectors'][det]['Layers'][layer]['Sensors'][lgad]['yPosSensor']
+        zlgad = self.data['Detectors'][det]['Layers'][layer]['Sensors'][lgad]['zPosSensor']
         xborder = self.data['Detectors'][det]['Layers'][layer]['Sensors'][lgad]['xborder']
         yborder = self.data['Detectors'][det]['Layers'][layer]['Sensors'][lgad]['yborder']
-        interpadx = self.data['Detectors'][det]['Layers'][layer]['Sensors'][lgad]['interPadx']
-        interpady = self.data['Detectors'][det]['Layers'][layer]['Sensors'][lgad]['interPady']
         xsize = self.data['Detectors'][det]['Layers'][layer]['Sensors'][lgad]['xSizeSensor']
         ysize = self.data['Detectors'][det]['Layers'][layer]['Sensors'][lgad]['ySizeSensor']
-        realx = x + xdet + xlayer + xlgad + xborder + xsize / 2.0 + xpad * (xsize + interpadx) 
-        realy = y + ydet + ylayer + ylgad + yborder + ysize / 2.0 + ypad * (ysize + interpady)
-        realz = z + zdet + zlayer + zlgad
+        nPadx = self.data['Detectors'][det]['Layers'][layer]['Sensors'][lgad]['nPadx']
+        nPady = self.data['Detectors'][det]['Layers'][layer]['Sensors'][lgad]['nPady']
+        padsizex = (xsize - 2.0*xborder)/nPadx
+        padsizey = (ysize - 2.0*yborder)/nPady
+        realx = xdet + xlayer + xlgad + xborder - xsize / 2.0 + padsizex/2.0 + xpad * padsizex 
+        realy = ydet + ylayer + ylgad + yborder - ysize / 2.0 + padsizey/2.0 + ypad * padsizey 
+        realz = zdet + zlayer + zlgad
 
         return realx, realy, realz 
 

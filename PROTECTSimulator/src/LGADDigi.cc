@@ -115,7 +115,6 @@ G4bool LGADDigi::Digitize(CLHEP::RandGauss *myGauss, ConfigurationGeometry *geom
     G4double sigmaJitter1 = signalShape->timeOfMax() / SignalToNoise;
     G4double sigmaJitter2 = (signalShape->fallTime() - signalShape->timeOfMax()) / SignalToNoise;
     
-    //Calculate the distorsion: No distorsion at this point
     G4double sigmaDistorsion = 0.0;
     
     //Calculate the Landau Noise
@@ -130,10 +129,8 @@ G4bool LGADDigi::Digitize(CLHEP::RandGauss *myGauss, ConfigurationGeometry *geom
     
     G4double smearing1 = myGauss->fire(0., sigmaToA);
     G4double smearing2 = myGauss->fire(0., sigmaToC);   
-    //smearing1 = 0;
-    //smearing2 = 0;
-    //G4cout << "charge: " << charge << " value: " << a.first << G4endl;
     TOA = genTOA + (a.first + smearing1) * CLHEP::ns; 
+    
     TOT = (a.second + smearing2 - smearing1) * CLHEP::ns;
     if (TOT < 0) return false; 
    
