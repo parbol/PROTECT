@@ -26,11 +26,12 @@ if __name__=='__main__':
     
     theWorld = data_['theWorld']
     theBeam = data_['theBeam']
+    theGantry = data_['theGantry']
     detector = data_['Detectors'][0]
     layer = detector['Layers'][0]
     sensor = layer['Sensors'][0]
 
-    theWorld["zSizeWorld"] = 250
+    theWorld["zSizeWorld"] = 300
     
     sensors = []
     for isensor in range(0, nSensors):
@@ -52,6 +53,7 @@ if __name__=='__main__':
     data = {} 
     data['theWorld'] = theWorld
     data['theBeam'] = theBeam
+    data['theGantry'] = theGantry
     data['Detectors'] = detectors
 
     

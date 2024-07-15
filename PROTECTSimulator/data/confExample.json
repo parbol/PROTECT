@@ -21,6 +21,20 @@
         "momentumDistribution": "Constant",
         "tBeamSigma": 1
     },
+    "theGantry":
+    {
+        "xGantryPosition": 0,
+        "yGantryPosition": 0,
+        "zGantryPosition": 135,
+        "xGantryRotation": 0,
+        "yGantryRotation": 0,
+        "zGantryRotation": 0,
+        "pRmin1": 0.1,
+        "pRmax1": 0.5,
+        "pRmin2": 1.0,
+        "pRmax2": 2.0,
+        "sizez": 20
+    },
     "Detectors":
     [
         {

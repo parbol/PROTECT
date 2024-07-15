@@ -166,7 +166,22 @@ ConfigurationGeometry::ConfigurationGeometry(G4String file) {
 	        }
             detectors.push_back(detector);	    
         }
-    }    
+
+        G4double xGantryPosition = atof(root["theGantry"]["xGantryPosition"].asString().c_str())*CLHEP::cm;
+        G4double yGantryPosition = atof(root["theGantry"]["yGantryPosition"].asString().c_str())*CLHEP::cm;
+        G4double zGantryPosition = atof(root["theGantry"]["zGantryPosition"].asString().c_str())*CLHEP::cm;
+        G4double xGantryRot = atof(root["theGantry"]["xGantryRotation"].asString().c_str());
+        G4double yGantryRot = atof(root["theGantry"]["yGantryRotation"].asString().c_str());
+        G4double zGantryRot = atof(root["theGantry"]["zGantryRotation"].asString().c_str());
+        G4double pRmin1 = atof(root["theGantry"]["pRmin1"].asString().c_str())*CLHEP::cm;
+        G4double pRmax1 = atof(root["theGantry"]["pRmax1"].asString().c_str())*CLHEP::cm;
+        G4double pRmin2 = atof(root["theGantry"]["pRmin2"].asString().c_str())*CLHEP::cm;
+        G4double pRmax2 = atof(root["theGantry"]["pRmax2"].asString().c_str())*CLHEP::cm;
+        G4double sizez = atof(root["theGantry"]["sizez"].asString().c_str())*CLHEP::cm;
+        gantry = new Gantry(xGantryPosition, yGantryPosition, zGantryPosition, xGantryRot, yGantryRot, zGantryRot,
+                                    pRmin1, pRmax1, pRmin2, pRmax2, sizez);   
+    } 
+
     goodGeometry = true;
     Print();
     return;
@@ -220,6 +235,16 @@ G4double ConfigurationGeometry::getSizeZ() {
 //----------------------------------------------------------------------//
 Detector * ConfigurationGeometry::getDetector(G4int a) {
     return detectors.at(a);
+}
+//----------------------------------------------------------------------//
+//----------------------------------------------------------------------//
+
+
+//----------------------------------------------------------------------//
+// Accesor to class information                                         //
+//----------------------------------------------------------------------//
+Gantry * ConfigurationGeometry::getGantry() {
+        return gantry;
 }
 //----------------------------------------------------------------------//
 //----------------------------------------------------------------------//
@@ -376,6 +401,9 @@ void ConfigurationGeometry::createG4objects(G4LogicalVolume *mother,
                                       mother, materials, SDman);
     }
 
+    gantry->createG4Objects(G4String("valdecilla"),
+                            mother, materials, SDman);
+
 }
 //----------------------------------------------------------------------//
 //----------------------------------------------------------------------//
@@ -402,6 +430,7 @@ void ConfigurationGeometry::Print() {
     for(G4int i = 0; i < getNDetectors(); i++) {
         detectors.at(i)->Print();
     }
+    gantry->Print();
     G4cout << "\033[0m" << G4endl;
 }
 //----------------------------------------------------------------------//
