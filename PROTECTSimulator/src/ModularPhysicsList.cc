@@ -1,7 +1,6 @@
 #include "ModularPhysicsList.hh"
 #include "ModularPhysicsList.hh"
 #include "globals.hh"
-#include "PhysicsList.hh"
 
 #include "G4ParticleDefinition.hh"
 #include "G4ParticleWithCuts.hh"
@@ -23,6 +22,9 @@
 #include "G4StoppingPhysics.hh"
 #include "G4IonPhysics.hh"
 #include "G4NeutronTrackingCut.hh"
+#include "G4RadioactiveDecayPhysics.hh"
+#include "G4IonBinaryCascadePhysics.hh"
+
 
 //https://ceiden.com/wp-content/uploads/2022/06/011-EMendoza_Protontherapy_WPE_v01.pdf
 //----------------------------------------------------------------------//
@@ -38,6 +40,9 @@ MyPhysicsList::MyPhysicsList() : G4VModularPhysicsList() {
 	RegisterPhysics( new G4StoppingPhysics );
 	RegisterPhysics( new G4IonPhysics );
 	RegisterPhysics( new G4NeutronTrackingCut );     
+	RegisterPhysics( new G4RadioactiveDecayPhysics);  
+  	RegisterPhysics( new G4IonBinaryCascadePhysics);  
+
 
 }
 //----------------------------------------------------------------------//

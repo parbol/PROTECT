@@ -13,7 +13,7 @@
         "yBeamSigma": 0.1,
         "zBeamPosition": 125,
         "maxOpenAngle": 0.12,
-        "nStep": 200,
+        "nStep": 100,
         "nParticles": 5,
         "nParticlesDistribution": "Constant",
         "momentum": 200,

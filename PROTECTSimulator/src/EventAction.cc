@@ -96,6 +96,7 @@ void EventAction::EndOfEventAction(const G4Event* evt) {
                 G4int n_hit = i.at(0)->entries();
                 for(G4int hit = 0; hit < n_hit; hit++) {
                     LGADSensorHit* aHit = (*(i.at(0)))[hit];
+                    G4cout << "caca: " << aHit->GetGenID() << G4endl;
                     if(aHit->GetEnergy() == 0) continue;
                     auto detID = aHit->GetDetectorID();
                     auto layerID = aHit->GetLayerID();
