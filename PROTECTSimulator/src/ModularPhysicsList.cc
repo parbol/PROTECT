@@ -1,5 +1,4 @@
 #include "ModularPhysicsList.hh"
-#include "ModularPhysicsList.hh"
 #include "globals.hh"
 
 #include "G4ParticleDefinition.hh"
@@ -41,7 +40,6 @@ MyPhysicsList::MyPhysicsList() : G4VModularPhysicsList() {
 	RegisterPhysics( new G4IonPhysics );
 	RegisterPhysics( new G4NeutronTrackingCut );     
 	RegisterPhysics( new G4RadioactiveDecayPhysics);  
-  	RegisterPhysics( new G4IonBinaryCascadePhysics);  
 
 
 }
