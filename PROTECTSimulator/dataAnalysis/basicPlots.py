@@ -1,4 +1,5 @@
 import json, sys, os, optparse
+from array import array
 import ROOT as r
 from tools.Event import Event
 from tools.GeometryConversor import GeometryConversor
@@ -24,6 +25,50 @@ def makePlots1D(plots, dir):
             h.GetXaxis().SetRangeUser(ymin, ymax)
         h.Draw(poption)
         can.SaveAs(fileName)
+
+
+def fTimeWalk(x, p):
+    
+    if x[0] < 1.6:
+        return p[0] + p[1] * x[0] + p[2] * x[0] * x[0] + p[3] * x[0] * x[0] * x[0]
+    else:
+        y = 1.6
+        return p[0] + p[1] * y + p[2] * y * y + p[3] * y * y * y
+
+
+def makeTimeWalk(name, tup, dir):
+
+    h = tup[0]
+    xlabel = tup[1]
+    ylabel = tup[2]
+    ymin = tup[3]
+    ymax = tup[4]
+    poption = tup[5]
+    canvasName = name + '_can'
+    fileName = dir + '/' + name + '.png'
+    can = r.TCanvas(canvasName)
+    h.GetXaxis().SetTitle(xlabel)
+    if ymin != ymax:
+        h.GetXaxis().SetRangeUser(ymin, ymax)
+    print('cacona peor')
+
+    tf1 = r.TF1('tf1', fTimeWalk, 0, 2, 4)
+    print('cacona buena')
+
+    h.Draw(poption)
+    h.Fit(tf1)
+    h.Draw(poption)
+    can.SaveAs(fileName)
+
+
+def makePlotsProf(plots, dir):
+
+    for name, tup in plots.items():
+
+        if name == 'timeWalk':
+            makeTimeWalk(name, tup, dir)
+        
+
 
 
 if __name__=='__main__':
@@ -74,6 +119,13 @@ if __name__=='__main__':
     plots1D['timeResolution'] = (timeResolution, "Time Resolution [ns]", 0, 0, '')
 
 
+    plotsProf = dict()
+    bins = [x*0.05 for x in range(0, 12)]
+    bins2 = [0.6, 0.7, 0.8, 0.9, 1.0, 1.2, 2.0]
+    bins.extend(bins2)
+    timeWalk = r.TProfile('timeWalk', 'Time walk vs. ToT', len(bins)-1, array('d', bins))
+    plotsProf['timeWalk'] = (timeWalk, 'ToT [ns]', 'ToA - genToa [ns]', 0, 0, '')
+
     ##################################################
     ##################Start looping###################
     ################################################## 
@@ -89,13 +141,15 @@ if __name__=='__main__':
             plots1D['tot'][0].Fill(ev.tot[i]) 
             plots1D['charge'][0].Fill(ev.charge[i]) 
             plots1D['genEnergy'][0].Fill(ev.genEnergy[i]) 
-            plots1D['timeResolution'][0].Fill(ev.toa[i]-ev.gentoa[i]) 
+            plots1D['timeResolution'][0].Fill(ev.toa[i]-ev.gentoa[i])
+            plotsProf['timeWalk'][0].Fill(ev.tot[i], ev.toa[i]-ev.gentoa[i]) 
 
     #################################################
     ##################Start plotting#################
     ################################################# 
     makePlots1D(plots1D, opts.outputDir)
-   
+    
+    makePlotsProf(plotsProf, opts.outputDir)
 
 
 
