@@ -119,7 +119,7 @@ G4bool LGADDigi::Digitize(CLHEP::RandGauss *myGauss, ConfigurationGeometry *geom
     //Calculate the Landau Noise
     //chOverMPV[0] = (it->second).hit_info[0][i] / (it->second).hit_info[2][i];
     //double sigmaLN = formulaLandauNoise_.evaluate(chOverMPV, emptyV);
-    G4double sigmaLN = 0.010;
+    G4double sigmaLN = 0.025;
     
     G4double sigmaToA = sqrt(sigmaJitter1 * sigmaJitter1 + sigmaDistorsion * sigmaDistorsion + tdcsigma * tdcsigma +
                            sigmaLN * sigmaLN);

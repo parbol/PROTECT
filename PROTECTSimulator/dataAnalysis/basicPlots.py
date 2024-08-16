@@ -29,11 +29,13 @@ def makePlots1D(plots, dir):
 
 def fTimeWalk(x, p):
     
-    if x[0] < 1.6:
-        return p[0] + p[1] * x[0] + p[2] * x[0] * x[0] + p[3] * x[0] * x[0] * x[0]
-    else:
-        y = 1.6
-        return p[0] + p[1] * y + p[2] * y * y + p[3] * y * y * y
+    return p[0] + p[1] * x[0] + p[2] * x[0] * x[0] + p[3] * x[0] * x[0] * x[0]
+
+    #if x[0] < 1.6:
+    #    return p[0] + p[1] * x[0] + p[2] * x[0] * x[0] + p[3] * x[0] * x[0] * x[0]
+    #else:
+    #    y = 1.6
+    #    return p[0] + p[1] * y + p[2] * y * y + p[3] * y * y * y
 
 
 def makeTimeWalk(name, tup, dir):
@@ -103,10 +105,10 @@ if __name__=='__main__':
     toa = r.TH1F("toa", "Time of Arrival", 200, -20, 50)
     plots1D['toa'] = (toa, 'ToA [ns]', 0, 0, '')
 
-    tot = r.TH1F("tot", "Time over threshold", 200, -20, 50)
+    tot = r.TH1F("tot", "Time over threshold", 200, 0, 4)
     plots1D['tot'] = (tot, 'ToT [ns]', 0, 0, '')
 
-    charge = r.TH1F("charge", "Charge deposition", 200, -20, 50)
+    charge = r.TH1F("charge", "Charge deposition", 200, 0, 5)
     plots1D['charge'] = (charge, 'charge [fC]', 0, 0, '')
     
     genEnergy = r.TH1F("genEnergy", "Energy of particle", 10000, 948, 962)
@@ -120,8 +122,9 @@ if __name__=='__main__':
 
 
     plotsProf = dict()
-    bins = [x*0.05 for x in range(0, 12)]
-    bins2 = [0.6, 0.7, 0.8, 0.9, 1.0, 1.2, 2.0]
+    bins = [x * 0.2 for x in range(0,5)]
+    bins2 = [x*0.1 for x in range(9, 30)]
+    #bins2 = [0.6, 0.7, 0.8, 0.9, 1.0, 1.2, 2.0]
     bins.extend(bins2)
     timeWalk = r.TProfile('timeWalk', 'Time walk vs. ToT', len(bins)-1, array('d', bins))
     plotsProf['timeWalk'] = (timeWalk, 'ToT [ns]', 'ToA - genToa [ns]', 0, 0, '')
@@ -138,7 +141,8 @@ if __name__=='__main__':
             plots1D['detectorN'][0].Fill(ev.det[i])
             plots1D['layerN'][0].Fill(ev.layer[i]) 
             plots1D['toa'][0].Fill(ev.toa[i])
-            plots1D['tot'][0].Fill(ev.tot[i]) 
+            if i == 0:
+                plots1D['tot'][0].Fill(ev.tot[i]) 
             plots1D['charge'][0].Fill(ev.charge[i]) 
             plots1D['genEnergy'][0].Fill(ev.genEnergy[i]) 
             plots1D['timeResolution'][0].Fill(ev.toa[i]-ev.gentoa[i])
