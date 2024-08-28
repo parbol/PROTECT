@@ -23,10 +23,11 @@
 #include "assert.h"
 
 #include "globals.hh"
+#include "Phantom.hh"
 #include "Detector.hh"
 #include "Layer.hh"
 #include "LGAD.hh"
-#include "Gantry.hh"
+
 
 class ConfigurationGeometry {
 
@@ -60,10 +61,11 @@ public:
     // Detector information
     Detector *getDetector(G4int);
     G4int getNDetectors();
-
-    // Gantry information
-    Gantry *getGantry();
     
+    // Detector information
+    Phantom *getPhantom(G4int);
+    G4int getNPhantoms();
+
     //Creating the geometry
     void createG4objects(G4LogicalVolume *, 
                          std::map<G4String, G4Material*> &,
@@ -86,8 +88,8 @@ private:
     G4int momentumDistribution, particleDistribution;
 
     G4double uniSizeX, uniSizeY, uniSizeZ;
-    Gantry *gantry;
     std::vector <Detector *> detectors;
+    std::vector <Phantom *> phantoms;
     bool goodGeometry;
     LGADSignalShape *signalShape;
 };

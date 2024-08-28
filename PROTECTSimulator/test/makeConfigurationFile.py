@@ -16,6 +16,7 @@ if __name__=='__main__':
         print('Please specify a name for the output configuration file')
         sys.exit()
     
+    nPhantoms = 4
     nDetectors = 2
     nLayers = 4
     nSensors = 64
@@ -26,12 +27,12 @@ if __name__=='__main__':
     
     theWorld = data_['theWorld']
     theBeam = data_['theBeam']
-    theGantry = data_['theGantry']
+    phantom = data_['Phantoms'][0]
     detector = data_['Detectors'][0]
     layer = detector['Layers'][0]
     sensor = layer['Sensors'][0]
 
-    theWorld["zSizeWorld"] = 300
+    theWorld["zSizeWorld"] = 250
     
     sensors = []
     for isensor in range(0, nSensors):
@@ -50,10 +51,49 @@ if __name__=='__main__':
         copydetector = detector.copy()
         detectors.append(copydetector)
 
+    phantoms = []
+    for iphantom in range(0, nPhantoms):
+        copyphantom = phantom.copy()
+        phantoms.append(copyphantom)
+
+    phantoms[0]['name'] = 'lung'
+    phantoms[0]['material'] = 'lung'
+    phantoms[0]['xPos'] = 3.0
+    phantoms[0]['yPos'] = 3.0
+    phantoms[0]['zPos'] = 0.0
+    phantoms[0]['radius'] = 2.0
+    phantoms[0]['zsize'] = 0.5
+
+    phantoms[1]['name'] = 'brain'
+    phantoms[1]['material'] = 'brain'
+    phantoms[1]['xPos'] = 3.0
+    phantoms[1]['yPos'] = -3.0
+    phantoms[1]['zPos'] = 0.0
+    phantoms[1]['radius'] = 2.0
+    phantoms[1]['zsize'] = 0.5
+
+    phantoms[2]['name'] = 'fat'
+    phantoms[2]['material'] = 'fat'
+    phantoms[2]['xPos'] = -3.0
+    phantoms[2]['yPos'] = 3.0
+    phantoms[2]['zPos'] = 0.0
+    phantoms[2]['radius'] = 2.0
+    phantoms[2]['zsize'] = 0.5
+
+    phantoms[3]['name'] = 'bone'
+    phantoms[3]['material'] = 'bone'
+    phantoms[3]['xPos'] = -3.0
+    phantoms[3]['yPos'] = -3.0
+    phantoms[3]['zPos'] = 0.0
+    phantoms[3]['radius'] = 2.0
+    phantoms[3]['zsize'] = 0.5
+
+    phantoms = []
+
     data = {} 
     data['theWorld'] = theWorld
     data['theBeam'] = theBeam
-    data['theGantry'] = theGantry
+    data['Phantoms'] = phantoms
     data['Detectors'] = detectors
 
     
@@ -71,7 +111,7 @@ if __name__=='__main__':
     layerYSize = [24, 24, 24, 24]
     layerZSize = [1, 1, 1, 1]
     sensorSize = 2.2
-    centralCorridor = 0.4
+    centralCorridor = 0.2
     interpad = 0.05
     L = (8.0*sensorSize+6.0*centralCorridor)
     posX = -L/2.0 + sensorSize / 2.0

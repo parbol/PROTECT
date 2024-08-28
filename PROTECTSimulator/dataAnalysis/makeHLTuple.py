@@ -83,9 +83,6 @@ if __name__ == '__main__':
     t.Branch('localgeny', localgeny, 'localgeny[nhits]/F')
     t.Branch('localgenz', localgenz, 'localgenz[nhits]/F')
 
-
-    h = r.TH1F('h', '', 100, -1, 1)
-    charge = r.TH1F('charge', '', 100, 0, 10)
     
     for ev in events:
         nhits[0] = len(ev.det)
@@ -93,8 +90,6 @@ if __name__ == '__main__':
             print('Too long event')
             continue
         nevent[0] = ev.nEvent
-        h.Fill(ev.toa[0]-ev.gentoa[0])
-        charge.Fill(ev.charge[0])
         insert(det, ev.det, Nmax)
         insert(layer, ev.layer, Nmax)
         insert(lgad, ev.lgad, Nmax)
@@ -117,12 +112,6 @@ if __name__ == '__main__':
         insert(localgenz, ev.localgenz, Nmax)
         t.Fill()
 
-    c = r.TCanvas('c','c')
-    h.Draw()
-    c.SaveAs("plot.png")
-    c2 = r.TCanvas('c2','c2')
-    charge.Draw()
-    c2.SaveAs("charge.png")
     output.Write()
     output.Close()
 

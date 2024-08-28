@@ -77,7 +77,8 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
     G4VSolid* worldSolid = new G4Box("worldBox", myConf->getSizeX()/2.0 , myConf->getSizeY()/2.0 , myConf->getSizeZ()/2.0 );
     G4LogicalVolume* worldLogical = new G4LogicalVolume(worldSolid, materials["air"], "worldLogical",0,0,0);
     G4VPhysicalVolume* worldPhysical = new G4PVPlacement(0, G4ThreeVector(0, 0, 0), worldLogical, "worldPhysical", worldLogicalPrim, false, 0);
-  
+
+
     myConf->createG4objects(worldLogical, materials, SDman);
  
     DumpGeometricalTree(worldPhysicalPrim, 3);
@@ -104,7 +105,10 @@ void DetectorConstruction::ConstructMaterials() {
     materials.insert(std::pair<G4String, G4Material *>("lead", man->FindOrBuildMaterial("G4_Pb")));
     materials.insert(std::pair<G4String, G4Material *>("silicon", man->FindOrBuildMaterial("G4_Si")));
     materials.insert(std::pair<G4String, G4Material *>("steel", man->FindOrBuildMaterial("G4_STAINLESS-STEEL")));
-
+    materials.insert(std::pair<G4String, G4Material *>("lung", man->FindOrBuildMaterial("G4_LUNG_ICRP")));
+    materials.insert(std::pair<G4String, G4Material *>("bone", man->FindOrBuildMaterial("G4_BONE_COMPACT_ICRU")));
+    materials.insert(std::pair<G4String, G4Material *>("fat", man->FindOrBuildMaterial("G4_ADIPOSE_TISSUE_ICRP")));
+    materials.insert(std::pair<G4String, G4Material *>("brain", man->FindOrBuildMaterial("G4_BRAIN_ICRP")));
 
 }
 //----------------------------------------------------------------------//
