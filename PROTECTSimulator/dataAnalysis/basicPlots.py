@@ -29,7 +29,8 @@ def makePlots1D(plots, dir):
 
 def fTimeWalk(x, p):
     
-    return p[0] + p[1] * x[0] + p[2] * x[0] * x[0] + p[3] * x[0] * x[0] * x[0]
+    return p[0] + p[1] * x[0]  
+    #return p[0] + p[1] * x[0] + p[2] * x[0] * x[0] + p[3] * x[0] * x[0] * x[0]
 
     #if x[0] < 1.6:
     #    return p[0] + p[1] * x[0] + p[2] * x[0] * x[0] + p[3] * x[0] * x[0] * x[0]
@@ -52,10 +53,8 @@ def makeTimeWalk(name, tup, dir):
     h.GetXaxis().SetTitle(xlabel)
     if ymin != ymax:
         h.GetXaxis().SetRangeUser(ymin, ymax)
-    print('cacona peor')
 
-    tf1 = r.TF1('tf1', fTimeWalk, 0, 2, 4)
-    print('cacona buena')
+    tf1 = r.TF1('tf1', fTimeWalk, 0, 3, 2)
 
     h.Draw(poption)
     h.Fit(tf1)

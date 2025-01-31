@@ -88,7 +88,7 @@ if __name__=='__main__':
     phantoms[3]['radius'] = 2.0
     phantoms[3]['zsize'] = 0.5
 
-    phantoms = []
+    #phantoms = []
 
     data = {} 
     data['theWorld'] = theWorld
@@ -122,16 +122,35 @@ if __name__=='__main__':
     sensorXSize = []
     sensorYSize = []
     sensorZSize = []
-    for ix in range(0, 8):
-        for iy in range(0, 8):
-            Xc = posX + ix * (sensorSize + centralCorridor)
-            Yc = posY + iy * (sensorSize + centralCorridor)
+    for ix in range(0, 4):
+        for iy in range(0, 4):
+            Xc = centralCorridor/2.0 + sensorSize/2.0 + ix * (sensorSize + centralCorridor)
+            Yc = centralCorridor/2.0 + sensorSize/2.0 + iy * (sensorSize + centralCorridor)
             sensorXPosition.append(Xc)
             sensorYPosition.append(Yc)
             sensorZPosition.append(0)
             sensorXSize.append(sensorSize)
             sensorYSize.append(sensorSize)
             sensorZSize.append(0.05)
+            sensorXPosition.append(-Xc)
+            sensorYPosition.append(Yc)
+            sensorZPosition.append(0)
+            sensorXSize.append(sensorSize)
+            sensorYSize.append(sensorSize)
+            sensorZSize.append(0.05 )
+            sensorXPosition.append(Xc)
+            sensorYPosition.append(-Yc)
+            sensorZPosition.append(0)
+            sensorXSize.append(sensorSize)
+            sensorYSize.append(sensorSize)
+            sensorZSize.append(0.05)
+            sensorXPosition.append(-Xc)
+            sensorYPosition.append(-Yc)
+            sensorZPosition.append(0)
+            sensorXSize.append(sensorSize)
+            sensorYSize.append(sensorSize)
+            sensorZSize.append(0.05)
+            print(Xc, Yc)
 
     for i, det_ in enumerate(data['Detectors']):
         det_['xPosDetector'] = detectorXPosition[i]  

@@ -60,6 +60,8 @@ if __name__ == '__main__':
         sys.exit()
 
 
+    resp = r.TH1F('resp', '', 100, -0.1, 0.1)
+
     t = r.TTree('events', 'events') 
     nevent = array('i', [0]) 
     x1 = array('f', [0]) 
@@ -128,14 +130,28 @@ if __name__ == '__main__':
         angley1 = correctAngle(vy1[0], vz1[0])
         angley2 = correctAngle(vy2[0], vz2[0])
         dthetax[0] = anglex1-anglex2
-        if dthetax[0] > 1.5:
-            print(vx1[0], vz1[0], vx2[0], vz2[0])
         dthetay[0] = angley1-angley2
-
+        e11 = tf.track1.hits[0][4]
+        e12 = tf.track1.hits[1][4]
+        e13 = tf.track1.hits[2][4]
+        e14 = tf.track1.hits[3][4]
         t.Fill()
+        if e11 < mp or e12 < mp or e13 < mp or e14 < mp:
+            continue
+        p11 = math.sqrt(e11**2-mp**2)
+        p12 = math.sqrt(e12**2-mp**2)
+        p13 = math.sqrt(e13**2-mp**2)
+        p14 = math.sqrt(e14**2-mp**2)
+        pval = (p11+p12+p13+p14)/4.0
+        resp.Fill((p1[0]-pval)/pval)
+
         
 
-
+    print('caca')
+    c = r.TCanvas('cresp', 'cresp')
+    resp.GetXaxis().SetTitle('(p_{reco}-p_{gen})/p_{gen}')
+    resp.Draw()
+    c.SaveAs('resp.png')
 
     output.Write()
     output.Close()

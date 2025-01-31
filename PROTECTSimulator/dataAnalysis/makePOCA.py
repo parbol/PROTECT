@@ -18,11 +18,18 @@ if __name__=='__main__':
         sys.exit()
 
 
+    tdrStyle =  r.TStyle("tdrStyle","Style for P-TDR")
+    tdrStyle.SetCanvasBorderMode(0)
+    #tdrStyle.SetPadTopMargin(0.05)
+    #tdrStyle.SetPadBottomMargin(0.13)
+    #tdrStyle.SetPadLeftMargin(0.16)
+    tdrStyle.SetPadRightMargin(0.2)
+    tdrStyle.cd()
     data = dict()
-    data['hxy'] = [40, -5, 5, 40, -5, 5]
-    data['hxz'] = [40, -5, 5, 20, -2, 2]
-    data['hyz'] = [40, -5, 5, 20, -2, 2]
-    pEstimator = POCAEstimator(input.events, data, 0.00)
+    data['hxy'] = [80, -12, 12, 80, -12, 12]
+    data['hxz'] = [80, -12, 12, 20, -2, 2]
+    data['hyz'] = [80, -12, 12, 20, -2, 2]
+    pEstimator = POCAEstimator(input.events, data, -0.01)
     pEstimator.loop()
     pEstimator.MakePlot()
     input.Close()

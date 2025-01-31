@@ -13,6 +13,7 @@ class Event:
         self.lgad = []
         self.xpad = []
         self.ypad = []
+        self.toaraw = []
         self.toa = []
         self.tot = []
         self.gentoa = []
@@ -37,8 +38,13 @@ class Event:
         self.lgad.append(lgad_)
         self.xpad.append(xpad_)
         self.ypad.append(ypad_)
-        self.toa.append(toa_)
+        self.toaraw.append(toa_)
         self.tot.append(tot_)
+        totv = tot_
+        if tot_ > 3.0:
+            totv = 3.0
+        toa = toa_ - (3.54126e-01 - totv * 1.26109e-01)
+        self.toa.append(toa) 
         self.charge.append(charge_)
         self.genEnergy.append(genEnergy_)
         self.gentoa.append(gentoa_)
