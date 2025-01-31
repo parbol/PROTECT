@@ -15,8 +15,8 @@ LGADDigi::LGADDigi(LGADSensorHit *h, LGADSignalShape *shape) {
     G4int padx = h->GetPadx();
     G4int pady = h->GetPady();
         
-    G4int detS = det << 19;
-    G4int layerS = layer << 14;
+    G4int detS = det << 24;
+    G4int layerS = layer << 19;
     G4int lgadS = lgad << 8;
     G4int padxS = padx << 4;
     G4int padyS = pady;
@@ -44,8 +44,8 @@ LGADDigi::LGADDigi(LGADSensorHit *h, LGADSignalShape *shape) {
 //----------------------------------------------------------------------//
 G4int LGADDigi::GetDet() {
 
-    G4int maskDet = 0b00000000111110000000000000000000;
-    return (hitID & maskDet) >> 19;
+    G4int maskDet = 0b00011111000000000000000000000000;
+    return (hitID & maskDet) >> 24;
 
 }
 //----------------------------------------------------------------------//
@@ -56,8 +56,8 @@ G4int LGADDigi::GetDet() {
 //----------------------------------------------------------------------//
 G4int LGADDigi::GetLayer() {
  
-    G4int maskLay = 0b00000000000001111100000000000000;
-    return (hitID & maskLay) >> 14;
+    G4int maskLay = 0b00000000111110000000000000000000;
+    return (hitID & maskLay) >> 19;
 }
 //----------------------------------------------------------------------//
 //----------------------------------------------------------------------//
@@ -67,7 +67,7 @@ G4int LGADDigi::GetLayer() {
 //----------------------------------------------------------------------//
 G4int LGADDigi::GetLGAD() {
  
-    G4int maskLGA = 0b00000000000000000011111100000000;
+    G4int maskLGA = 0b00000000000001111111111100000000;
     return (hitID & maskLGA) >> 8;
 }
 //----------------------------------------------------------------------//
@@ -119,7 +119,7 @@ G4bool LGADDigi::Digitize(CLHEP::RandGauss *myGauss, ConfigurationGeometry *geom
     //Calculate the Landau Noise
     //chOverMPV[0] = (it->second).hit_info[0][i] / (it->second).hit_info[2][i];
     //double sigmaLN = formulaLandauNoise_.evaluate(chOverMPV, emptyV);
-    G4double sigmaLN = 0.010;
+    G4double sigmaLN = 0.025;
     
     G4double sigmaToA = sqrt(sigmaJitter1 * sigmaJitter1 + sigmaDistorsion * sigmaDistorsion + tdcsigma * tdcsigma +
                            sigmaLN * sigmaLN);

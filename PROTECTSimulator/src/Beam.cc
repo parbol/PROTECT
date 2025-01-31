@@ -81,6 +81,7 @@ std::vector<G4double> Beam::fireParticle() {
 //----------------------------------------------------------------------//
 void Beam::updateBeam() {
 
+    G4cout << "vx: " << vx << " vy: " << vy << G4endl;	
     if(vx < myGeom->GetMaxOpenAngle()) {
         vx = vx + step;
     } else {

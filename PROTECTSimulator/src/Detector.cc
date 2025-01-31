@@ -1,4 +1,5 @@
 #include "Detector.hh"
+#include "G4VisAttributes.hh"
 
 
 
@@ -69,6 +70,9 @@ void Detector::createG4Objects(G4String name, G4LogicalVolume *mother,
     G4String detPhysicalName = G4String("detectorPhys_") + name;
     physicalVolume = new G4PVPlacement(getRot(), getPos(), logicalVolume, detPhysicalName,
                                        mother, false, 0, true);
+    G4VisAttributes *attlog = new G4VisAttributes(false);
+    attlog->SetVisibility(false);
+    logicalVolume->SetVisAttributes(attlog);
 }
 //----------------------------------------------------------------------//
 //----------------------------------------------------------------------//

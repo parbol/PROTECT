@@ -1,148 +1,10 @@
 import json, sys, optparse
 import ROOT as r
 from array import array
+from tools.Event import Event
+from tools.GeometryConversor import GeometryConversor
+from tools.EventLoader import EventLoader
 
-class Event:
-
-    def __init__(self, nEvent, geomConversor):
-        self.geomConversor = geomConversor
-        self.nEvent = nEvent
-        self.det = []
-        self.layer = []
-        self.lgad = []
-        self.xpad = []
-        self.ypad = []
-        self.toa = []
-        self.tot = []
-        self.gentoa = []
-        self.genEnergy = []
-        self.genID = []
-        self.localgenx = []
-        self.localgeny = []
-        self.localgenz = []
-        self.x = []
-        self.y = []
-        self.z = []
-        self.genx = []
-        self.geny = []
-        self.genz = []
-        self.charge = []
-
-    def add(self, det_, layer_, lgad_, xpad_, ypad_, toa_, tot_, charge_, genEnergy_, gentoa_, genx_, geny_, genz_, genID_):
-        
-        self.det.append(det_)
-        self.layer.append(layer_)
-        self.lgad.append(lgad_)
-        self.xpad.append(xpad_)
-        self.ypad.append(ypad_)
-        self.toa.append(toa_)
-        self.tot.append(tot_)
-        self.charge.append(charge_)
-        self.genEnergy.append(genEnergy_)
-        self.gentoa.append(gentoa_)
-        self.localgenx.append(genx_)
-        self.localgeny.append(geny_)
-        self.localgenz.append(genz_)
-        self.genID.append(genID_)
-        x, y, z = self.geomConversor.toGlobalMeasurement(det_, layer_, lgad_, xpad_, ypad_)
-        genx, geny, genz = self.geomConversor.toGlobal(det_, layer_, lgad_, xpad_, ypad_, genx_, geny_, genz_)
-        self.x.append(x)
-        self.y.append(y)
-        self.z.append(z)
-        self.genx.append(genx)
-        self.geny.append(geny)
-        self.genz.append(genz)
-
-    def nHits(self):
-
-        return len(self.det)
-
-
-class GeometryConversor:
-
-    def __init__(self, name):
-        
-        try:
-            with open(name, 'r') as cinput:
-                self.data = json.load(cinput)
-        except:
-            print('Configuration file is not valid')
-            sys.exit()
-        cinput.close()
-
-        
-    def toGlobal(self, det, layer, lgad, xpad, ypad, x, y, z):
-
-        #This method is still hardcoded for a vertical detector 
-        xdet = self.data['Detectors'][det]['xPosDetector']        
-        ydet = self.data['Detectors'][det]['yPosDetector']
-        zdet = self.data['Detectors'][det]['zPosDetector']
-        xlayer = self.data['Detectors'][det]['Layers'][layer]['xPosLayer']
-        ylayer = self.data['Detectors'][det]['Layers'][layer]['yPosLayer']
-        zlayer = self.data['Detectors'][det]['Layers'][layer]['zPosLayer']
-        xlgad = self.data['Detectors'][det]['Layers'][layer]['Sensors'][lgad]['xPosSensor']
-        ylgad = self.data['Detectors'][det]['Layers'][layer]['Sensors'][lgad]['yPosSensor']
-        zlgad = self.data['Detectors'][det]['Layers'][layer]['Sensors'][lgad]['zPosSensor']
-        
-        realx = x + xdet + xlayer + xlgad    
-        realy = y + ydet + ylayer + ylgad   
-        realz = z + zdet + zlayer + zlgad
-
-        return realx, realy, realz 
-
-    def toGlobalMeasurement(self, det, layer, lgad, xpad, ypad):
-
-        #This method is still hardcoded for a vertical detector 
-        xdet = self.data['Detectors'][det]['xPosDetector']        
-        ydet = self.data['Detectors'][det]['yPosDetector']
-        zdet = self.data['Detectors'][det]['zPosDetector']
-        xlayer = self.data['Detectors'][det]['Layers'][layer]['xPosLayer']
-        ylayer = self.data['Detectors'][det]['Layers'][layer]['yPosLayer']
-        zlayer = self.data['Detectors'][det]['Layers'][layer]['zPosLayer']
-        xlgad = self.data['Detectors'][det]['Layers'][layer]['Sensors'][lgad]['xPosSensor']
-        ylgad = self.data['Detectors'][det]['Layers'][layer]['Sensors'][lgad]['yPosSensor']
-        zlgad = self.data['Detectors'][det]['Layers'][layer]['Sensors'][lgad]['zPosSensor']
-        xborder = self.data['Detectors'][det]['Layers'][layer]['Sensors'][lgad]['xborder']
-        yborder = self.data['Detectors'][det]['Layers'][layer]['Sensors'][lgad]['yborder']
-        xsize = self.data['Detectors'][det]['Layers'][layer]['Sensors'][lgad]['xSizeSensor']
-        ysize = self.data['Detectors'][det]['Layers'][layer]['Sensors'][lgad]['ySizeSensor']
-        nPadx = self.data['Detectors'][det]['Layers'][layer]['Sensors'][lgad]['nPadx']
-        nPady = self.data['Detectors'][det]['Layers'][layer]['Sensors'][lgad]['nPady']
-        padsizex = (xsize - 2.0*xborder)/nPadx
-        padsizey = (ysize - 2.0*yborder)/nPady
-        realx = xdet + xlayer + xlgad + xborder - xsize / 2.0 + padsizex/2.0 + xpad * padsizex 
-        realy = ydet + ylayer + ylgad + yborder - ysize / 2.0 + padsizey/2.0 + ypad * padsizey 
-        realz = zdet + zlayer + zlgad
-
-        return realx, realy, realz 
-
-
-def loadEvents(inputFile, configuration):
-
-    try:
-        f = r.TFile(inputFile)
-    except:
-        print('Input file does not exist or it is corrupt')
-        sys.exit()
-
-    geomConversor = GeometryConversor(configuration)
-   
-    events = []
-    event = -1
-    counter = -1
-
-    for ev in f.hits:
-        if event != ev.eventNumber:
-            newEvent = Event(ev.eventNumber, geomConversor)
-            newEvent.add(ev.det, ev.layer, ev.lgad, ev.xpad, ev.ypad, ev.toa, ev.tot, ev.charge, ev.genEnergy, ev.gentoa, ev.genx, ev.geny, ev.genz, ev.genID)
-            events.append(newEvent)
-            event = ev.eventNumber
-            counter = counter + 1
-        else:
-            events[counter].add(ev.det, ev.layer, ev.lgad, ev.xpad, ev.ypad, ev.toa, ev.tot, ev.charge, ev.genEnergy, ev.gentoa, ev.genx, ev.geny, ev.genz, ev.genID)
-
-    f.Close()
-    return events
 
 
 def insert(a, b, N):
@@ -162,9 +24,10 @@ if __name__ == '__main__':
     parser.add_option('-c', '--conf', action='store', type='string', dest='configurationFile', default='conf.json', help='Configuration file')
     parser.add_option('-o', '--output', action='store', type='string', dest='outputFile', default='output.root', help='Output ROOT file')
     (opts, args) = parser.parse_args()
-
-    events = loadEvents(opts.inputFile, opts.configurationFile)
-
+ 
+    loader = EventLoader(opts.inputFile, opts.configurationFile)
+    events = loader.loadEvents()
+    
     try:
         output = r.TFile(opts.outputFile, 'RECREATE')
     except:
@@ -173,7 +36,8 @@ if __name__ == '__main__':
 
 
     t = r.TTree('events', 'events')
-    Nmax = 20 
+    Nmax = 15
+    Nmin = 0
     nhits = array('i', [0])
     nevent = array('i', [0])
     det = array('i', Nmax*[0])
@@ -181,6 +45,7 @@ if __name__ == '__main__':
     lgad = array('i', Nmax*[0])
     xpad = array('i', Nmax*[0])
     ypad = array('i', Nmax*[0])
+    toaraw = array('f', Nmax*[0])
     toa = array('f', Nmax*[0])
     tot = array('f', Nmax*[0])
     charge = array('f', Nmax*[0]) 
@@ -204,6 +69,7 @@ if __name__ == '__main__':
     t.Branch('lgad', lgad, 'lgad[nhits]/I')
     t.Branch('xpad', xpad, 'xpad[nhits]/I')
     t.Branch('ypad', ypad, 'ypad[nhits]/I')
+    t.Branch('toaraw', toaraw, 'toaraw[nhits]/F')
     t.Branch('toa', toa, 'toa[nhits]/F')
     t.Branch('tot', tot, 'tot[nhits]/F')
     t.Branch('charge', charge, 'charge[nhits]/F')
@@ -220,24 +86,22 @@ if __name__ == '__main__':
     t.Branch('localgeny', localgeny, 'localgeny[nhits]/F')
     t.Branch('localgenz', localgenz, 'localgenz[nhits]/F')
 
-
-    h = r.TH1F('h', '', 100, -1, 1)
-    charge = r.TH1F('charge', '', 100, 0, 10)
     
     for ev in events:
         nhits[0] = len(ev.det)
         if nhits[0] > Nmax:
             print('Too long event')
             continue
+        if nhits[0] < Nmin:
+            continue
         nevent[0] = ev.nEvent
-        h.Fill(ev.toa[0]-ev.gentoa[0])
-        charge.Fill(ev.charge[0])
         insert(det, ev.det, Nmax)
         insert(layer, ev.layer, Nmax)
         insert(lgad, ev.lgad, Nmax)
         insert(xpad, ev.xpad, Nmax)
         insert(ypad, ev.ypad, Nmax)
         insert(charge, ev.charge, Nmax)
+        insert(toaraw, ev.toaraw, Nmax)
         insert(toa, ev.toa, Nmax)
         insert(tot, ev.tot, Nmax)
         insert(genEnergy, ev.genEnergy, Nmax)
@@ -254,12 +118,6 @@ if __name__ == '__main__':
         insert(localgenz, ev.localgenz, Nmax)
         t.Fill()
 
-    c = r.TCanvas('c','c')
-    h.Draw()
-    c.SaveAs("plot.png")
-    c2 = r.TCanvas('c2','c2')
-    charge.Draw()
-    c2.SaveAs("charge.png")
     output.Write()
     output.Close()
 

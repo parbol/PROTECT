@@ -1,4 +1,5 @@
 #include "Layer.hh"
+#include "G4VisAttributes.hh"
 
 
 //----------------------------------------------------------------------//
@@ -64,6 +65,18 @@ void Layer::createG4Objects(G4String name, G4LogicalVolume *mother,
     physicalVolume = new G4PVPlacement(getRot(), getPos(), 
                                        logicalVolume, layerPhysicalName,
                                        mother, false, 0, true);
+    G4String layerStrName = layerName + G4String("_str");
+    G4String layerStrPhysName = layerPhysicalName + G4String("_str");
+    G4Box *layerStrSolid = new G4Box(layerStrName, sizes[0]/2.0, sizes[1]/2.0, 1.0*CLHEP::mm);
+    G4LogicalVolume *layerStrLog = new G4LogicalVolume(layerStrSolid, materials["carbon"], layerStrName);
+    G4VPhysicalVolume *layerStrVol = new G4PVPlacement(0, G4ThreeVector(0.,0.,0.), layerStrLog, layerStrPhysName,
+                                                        logicalVolume, false, 0, true);
+    G4VisAttributes *attlog = new G4VisAttributes(false);
+    attlog->SetVisibility(false);
+    logicalVolume->SetVisAttributes(attlog);
+    G4Colour silver(155.0/256.0, 155.0/256.0, 155.0/256.0);
+    G4VisAttributes *attlayer = new G4VisAttributes(silver);
+    layerStrLog->SetVisAttributes(attlayer);
    
 }
 //----------------------------------------------------------------------//

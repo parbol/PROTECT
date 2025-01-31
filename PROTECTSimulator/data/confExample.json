@@ -13,7 +13,7 @@
         "yBeamSigma": 0.1,
         "zBeamPosition": 125,
         "maxOpenAngle": 0.12,
-        "nStep": 100,
+        "nStep": 200,
         "nParticles": 5,
         "nParticlesDistribution": "Constant",
         "momentum": 200,
@@ -21,20 +21,21 @@
         "momentumDistribution": "Constant",
         "tBeamSigma": 1
     },
-    "theGantry":
-    {
-        "xGantryPosition": 0,
-        "yGantryPosition": 0,
-        "zGantryPosition": 135,
-        "xGantryRotation": 0,
-        "yGantryRotation": 0,
-        "zGantryRotation": 0,
-        "pRmin1": 0.1,
-        "pRmax1": 0.5,
-        "pRmin2": 1.0,
-        "pRmax2": 2.0,
-        "sizez": 20
-    },
+    "Phantoms":
+    [
+	{
+	    "name": "lung",
+            "material": "lung",
+            "xPos":0,
+            "yPos":0,
+	    "zPos":0,
+            "xDir":0,
+            "yDir":0,
+            "zDir":0,
+            "radius":1,
+            "zsize":1
+	}
+    ],	
     "Detectors":
     [
         {
