@@ -43,7 +43,8 @@ class Event:
         totv = tot_
         if tot_ > 3.0:
             totv = 3.0
-        toa = toa_ - (3.54126e-01 - totv * 1.26109e-01)
+        toa = toa_ - 6.29937e-01 + 4.49338e-01 * tot_ - 1.23671e-01 * tot_**2 + 1.58380e-02 * tot_*tot_*tot_
+
         self.toa.append(toa) 
         self.charge.append(charge_)
         self.genEnergy.append(genEnergy_)

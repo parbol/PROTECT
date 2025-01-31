@@ -36,7 +36,8 @@ if __name__ == '__main__':
 
 
     t = r.TTree('events', 'events')
-    Nmax = 20 
+    Nmax = 15
+    Nmin = 0
     nhits = array('i', [0])
     nevent = array('i', [0])
     det = array('i', Nmax*[0])
@@ -90,6 +91,8 @@ if __name__ == '__main__':
         nhits[0] = len(ev.det)
         if nhits[0] > Nmax:
             print('Too long event')
+            continue
+        if nhits[0] < Nmin:
             continue
         nevent[0] = ev.nEvent
         insert(det, ev.det, Nmax)

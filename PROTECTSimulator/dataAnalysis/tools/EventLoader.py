@@ -9,7 +9,6 @@ from tools.GeometryConversor import GeometryConversor
 class EventLoader:
 
     def __init__(self, inputFile, configuration):
-        print('I am in')
         self.inputFile = inputFile
         self.configuration = configuration
              

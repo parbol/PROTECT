@@ -44,7 +44,7 @@ if __name__ == '__main__':
     (opts, args) = parser.parse_args()
     
     c = 29.9792458 #cm/ns 
-    mp = 938.27208943 #MeV
+    mmu = 105.6583755 #MeV
 
     try:
         input = r.TFile(opts.inputFile)
@@ -60,7 +60,7 @@ if __name__ == '__main__':
         sys.exit()
 
 
-    resp = r.TH1F('resp', '', 100, -0.1, 0.1)
+    resp = r.TH1F('resp', '', 100, -10, 10)
 
     t = r.TTree('events', 'events') 
     nevent = array('i', [0]) 
@@ -70,14 +70,14 @@ if __name__ == '__main__':
     vx1 = array('f', [0]) 
     vy1 = array('f', [0]) 
     vz1 = array('f', [0]) 
-    p1 = array('f', [0]) 
     x2 = array('f', [0]) 
     y2 = array('f', [0]) 
     z2 = array('f', [0]) 
     vx2 = array('f', [0]) 
     vy2 = array('f', [0]) 
     vz2 = array('f', [0]) 
-    p2 = array('f', [0]) 
+    p = array('f', [0]) 
+    pmc = array('f', [0]) 
     dthetax = array('f', [0]) 
     dthetay = array('f', [0]) 
  
@@ -88,14 +88,14 @@ if __name__ == '__main__':
     t.Branch('vx1', vx1, 'vx1/F') 
     t.Branch('vy1', vy1, 'vy1/F') 
     t.Branch('vz1', vz1, 'vz1/F')
-    t.Branch('p1', p1, 'p1/F')
     t.Branch('x2', x2, 'x2/F') 
     t.Branch('y2', y2, 'y2/F') 
     t.Branch('z2', z2, 'z2/F') 
     t.Branch('vx2', vx2, 'vx2/F') 
     t.Branch('vy2', vy2, 'vy2/F') 
     t.Branch('vz2', vz2, 'vz2/F')
-    t.Branch('p2', p2, 'p2/F')
+    t.Branch('p', p, 'p/F')
+    t.Branch('pmc', pmc, 'pmc/F')
     t.Branch('dthetax', dthetax, 'dthetax/F')
     t.Branch('dthetay', dthetay, 'dthetay/F')
 
@@ -113,8 +113,6 @@ if __name__ == '__main__':
         vz1[0] = tf.track1.bz
         v1 = math.sqrt(vx1[0]*vx1[0]+vy1[0]*vy1[0]+vz1[0]*vz1[0])
         beta1 = v1/c
-        gamma1 = 1.0/math.sqrt(1.0 - beta1**2)
-        p1[0] = mp * beta1 * gamma1
         x2[0] = tf.track2.x0
         y2[0] = tf.track2.y0
         z2[0] = tf.track2.z0
@@ -123,8 +121,20 @@ if __name__ == '__main__':
         vz2[0] = tf.track2.bz
         v2 = math.sqrt(vx2[0]*vx2[0]+vy2[0]*vy2[0]+vz2[0]*vz2[0])
         beta2 = v2/c
-        gamma2 = 1.0/math.sqrt(1.0 - beta2**2)
-        p2[0] = mp * beta2 * gamma2
+        #velocity estimation
+        nux1 = vx1[0]/v1
+        nuy1 = vy1[0]/v1
+        nuz1 = vz1[0]/v1
+        nux2 = vx2[0]/v2
+        nuy2 = vy2[0]/v2
+        nuz2 = vz2[0]/v2
+        denominator = tf.track1.t2 + tf.track2.t2
+        num1 = nux1 * tf.track1.xt + nuy1 * tf.track1.yt + nuz1 * tf.track1.zt
+        num2 = nux2 * tf.track2.xt + nuy2 * tf.track2.yt + nuz2 * tf.track2.zt
+        num3 = (nux1 * tf.track1.x0 + nuy1 * tf.track1.y0 + nuz1 * tf.track1.z0)* tf.track1.t
+        num4 = (nux2 * tf.track2.x0 + nuy2 * tf.track2.y0 + nuz2 * tf.track2.z0)* tf.track2.t
+        v = (num1 + num2 - num3 - num4)/denominator
+        beta = v/c
         anglex1 = correctAngle(vx1[0], vz1[0])
         anglex2 = correctAngle(vx2[0], vz2[0])
         angley1 = correctAngle(vy1[0], vz1[0])
@@ -135,24 +145,22 @@ if __name__ == '__main__':
         e12 = tf.track1.hits[1][4]
         e13 = tf.track1.hits[2][4]
         e14 = tf.track1.hits[3][4]
+        e21 = tf.track2.hits[0][4]
+        e22 = tf.track2.hits[1][4]
+        e23 = tf.track2.hits[2][4]
+        e24 = tf.track2.hits[3][4]
+        e = (e11 + e12 + e13 + e14 + e21 + e22 + e23 + e24)/8.0  
+        if e >= mmu:
+            pmc[0] = math.sqrt(e**2-mmu**2)
+        else:
+            pmc[0] = -1.0
+        if beta <= 1.0:
+            gamma = 1.0/math.sqrt(1.0 - beta**2)
+            p[0] = mmu * beta * gamma
+        else:
+            p[0] = -1.0
         t.Fill()
-        if e11 < mp or e12 < mp or e13 < mp or e14 < mp:
-            continue
-        p11 = math.sqrt(e11**2-mp**2)
-        p12 = math.sqrt(e12**2-mp**2)
-        p13 = math.sqrt(e13**2-mp**2)
-        p14 = math.sqrt(e14**2-mp**2)
-        pval = (p11+p12+p13+p14)/4.0
-        resp.Fill((p1[0]-pval)/pval)
-
         
-
-    print('caca')
-    c = r.TCanvas('cresp', 'cresp')
-    resp.GetXaxis().SetTitle('(p_{reco}-p_{gen})/p_{gen}')
-    resp.Draw()
-    c.SaveAs('resp.png')
-
     output.Write()
     output.Close()
     input.Close()

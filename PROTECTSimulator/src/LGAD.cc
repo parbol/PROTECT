@@ -2,6 +2,7 @@
 
 #include "LGAD.hh"
 #include "LGADSensor.hh"
+#include "G4VisAttributes.hh"
 
 //----------------------------------------------------------------------//
 // Constructor                                                          //
@@ -167,12 +168,17 @@ void LGAD::createG4Objects(G4String name, G4LogicalVolume *mother,
 
     G4String LGADName = G4String("LGAD_") + name;  
     solidVolume = new G4Box(LGADName, sizes[0]/2.0, sizes[1]/2.0, sizes[2]/2.0);
-    logicalVolume = new G4LogicalVolume(solidVolume, materials["air"], LGADName);
+    logicalVolume = new G4LogicalVolume(solidVolume, materials["silicon"], LGADName);
     G4String LGADPhysicalName = G4String("LGADPhys_") + name;
     physicalVolume = new G4PVPlacement(getRot(), getPos(), 
                                        logicalVolume, LGADPhysicalName,
                                        mother, false, 0, true);
-
+    G4String ETROCName = LGADName + G4String("_etroc");
+    G4String ETROCPhysName = LGADPhysicalName + G4String("_etroc");
+    G4Box *ETROCSolid = new G4Box(ETROCName, sizes[0]/2.0, sizes[1]/2.0, 2.0*CLHEP::mm);
+    G4LogicalVolume *ETROCLog = new G4LogicalVolume(ETROCSolid, materials["silicon"], ETROCName);
+    G4VPhysicalVolume *ETROCVol = new G4PVPlacement(getRot(), getPos()+G4ThreeVector(0.,0.,sizes[2]/2.0+2.0*CLHEP::mm), ETROCLog, ETROCPhysName,
+                                                        mother, false, 0, true);
     //We need to make this object sensitive
     G4String SDname = LGADName;
     G4String Collection = G4String("HitsCollection_") + name;
@@ -180,6 +186,13 @@ void LGAD::createG4Objects(G4String name, G4LogicalVolume *mother,
     lgadSensor->setLGAD(this);
     SDman->AddNewDetector(lgadSensor);
     logicalVolume->SetSensitiveDetector(lgadSensor);
+
+    G4Colour silicon(238.0/256.0, 162.0/256.0, 11.0/256.0);
+    G4VisAttributes *attlog = new G4VisAttributes(silicon);
+    logicalVolume->SetVisAttributes(attlog);
+    G4Colour pcb(117.0/256.0, 219.0/256.0, 28.0/256.0);
+    G4VisAttributes *attetroc = new G4VisAttributes(pcb);
+    ETROCLog->SetVisAttributes(attetroc);
 
 }
 //----------------------------------------------------------------------//
