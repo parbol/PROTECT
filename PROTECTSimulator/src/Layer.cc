@@ -67,7 +67,7 @@ void Layer::createG4Objects(G4String name, G4LogicalVolume *mother,
                                        mother, false, 0, true);
     G4String layerStrName = layerName + G4String("_str");
     G4String layerStrPhysName = layerPhysicalName + G4String("_str");
-    G4Box *layerStrSolid = new G4Box(layerStrName, sizes[0]/2.0, sizes[1]/2.0, 1.0*CLHEP::mm);
+    G4Box *layerStrSolid = new G4Box(layerStrName, sizes[0]/2.0, sizes[1]/2.0, sizes[2]/8.0);
     G4LogicalVolume *layerStrLog = new G4LogicalVolume(layerStrSolid, materials["carbon"], layerStrName);
     G4VPhysicalVolume *layerStrVol = new G4PVPlacement(0, G4ThreeVector(0.,0.,0.), layerStrLog, layerStrPhysName,
                                                         logicalVolume, false, 0, true);

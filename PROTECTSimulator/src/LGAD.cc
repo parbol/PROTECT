@@ -175,9 +175,9 @@ void LGAD::createG4Objects(G4String name, G4LogicalVolume *mother,
                                        mother, false, 0, true);
     G4String ETROCName = LGADName + G4String("_etroc");
     G4String ETROCPhysName = LGADPhysicalName + G4String("_etroc");
-    G4Box *ETROCSolid = new G4Box(ETROCName, sizes[0]/2.0, sizes[1]/2.0, 2.0*CLHEP::mm);
+    G4Box *ETROCSolid = new G4Box(ETROCName, sizes[0]/2.0, sizes[1]/2.0, 0.25*CLHEP::mm);
     G4LogicalVolume *ETROCLog = new G4LogicalVolume(ETROCSolid, materials["silicon"], ETROCName);
-    G4VPhysicalVolume *ETROCVol = new G4PVPlacement(getRot(), getPos()+G4ThreeVector(0.,0.,sizes[2]/2.0+2.0*CLHEP::mm), ETROCLog, ETROCPhysName,
+    G4VPhysicalVolume *ETROCVol = new G4PVPlacement(getRot(), getPos()+G4ThreeVector(0.,0.,sizes[2]/2.0+0.25*CLHEP::mm), ETROCLog, ETROCPhysName,
                                                         mother, false, 0, true);
     //We need to make this object sensitive
     G4String SDname = LGADName;

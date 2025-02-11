@@ -109,7 +109,7 @@ if __name__=='__main__':
     layerZPosition = [50, 25, -25, -50]
     layerXSize = [24, 24, 24, 24]
     layerYSize = [24, 24, 24, 24]
-    layerZSize = [1, 1, 1, 1]
+    layerZSize = [4, 4, 4, 4]
     sensorSize = 2.2
     centralCorridor = 0.2
     interpad = 0.05
@@ -122,35 +122,35 @@ if __name__=='__main__':
     sensorXSize = []
     sensorYSize = []
     sensorZSize = []
+    sensZ = 0.05
     for ix in range(0, 4):
         for iy in range(0, 4):
             Xc = centralCorridor/2.0 + sensorSize/2.0 + ix * (sensorSize + centralCorridor)
             Yc = centralCorridor/2.0 + sensorSize/2.0 + iy * (sensorSize + centralCorridor)
             sensorXPosition.append(Xc)
             sensorYPosition.append(Yc)
-            sensorZPosition.append(0)
+            sensorZPosition.append(layerZSize[0]/8.0 + sensZ / 2.0)
             sensorXSize.append(sensorSize)
             sensorYSize.append(sensorSize)
-            sensorZSize.append(0.05)
+            sensorZSize.append(sensZ)
             sensorXPosition.append(-Xc)
             sensorYPosition.append(Yc)
             sensorZPosition.append(0)
             sensorXSize.append(sensorSize)
             sensorYSize.append(sensorSize)
-            sensorZSize.append(0.05 )
+            sensorZSize.append(sensZ)
             sensorXPosition.append(Xc)
             sensorYPosition.append(-Yc)
             sensorZPosition.append(0)
             sensorXSize.append(sensorSize)
             sensorYSize.append(sensorSize)
-            sensorZSize.append(0.05)
+            sensorZSize.append(sensZ)
             sensorXPosition.append(-Xc)
             sensorYPosition.append(-Yc)
             sensorZPosition.append(0)
             sensorXSize.append(sensorSize)
             sensorYSize.append(sensorSize)
-            sensorZSize.append(0.05)
-            print(Xc, Yc)
+            sensorZSize.append(sensZ)
 
     for i, det_ in enumerate(data['Detectors']):
         det_['xPosDetector'] = detectorXPosition[i]  
