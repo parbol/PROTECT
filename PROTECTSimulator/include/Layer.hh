@@ -9,7 +9,8 @@ class Layer : GeomObject {
 
 public:
 
-    Layer(G4double, G4double, G4double, G4double, G4double, G4double, G4double, G4double, G4double, G4int, G4int);
+    Layer(G4double, G4double, G4double, G4double, G4double, G4double, G4double, G4double, G4double, 
+          G4double, G4double, G4double, G4double, G4double, G4double, G4double, G4double, G4double, G4int, G4int);
     
     void AddSensor(LGAD *);
     
@@ -28,6 +29,10 @@ public:
 private:
     std::vector<LGAD *> sensors;
     G4int ndetId, nlayerId;
+    G4double xPlatePos, yPlatePos, zPlatePos;
+    G4double xPlateRot, yPlateRot, zPlateRot;
+    G4double xPlateSize, yPlateSize, zPlateSize;
+
 };
 
 
