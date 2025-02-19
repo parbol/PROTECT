@@ -13,6 +13,9 @@ public:
     LGAD(G4double, G4double, G4double, 
          G4double, G4double, G4double, 
          G4double, G4double, G4double,
+	 G4double, G4double, G4double,
+         G4double, G4double, G4double,
+         G4double, G4double, G4double,
          G4int, G4int, G4double, G4double,
          G4double, G4double, G4double, G4double,
          G4double, G4double, G4int, G4int, G4int);
@@ -59,7 +62,9 @@ private:
     G4int nPadx, nPady;
     G4double interPadx, interPady, borderPadx, borderPady;
     G4double chargeThreshold, noiseLevel, tdcSigma, Gain;
-
+    G4double xETROCPos, yETROCPos, zETROCPos;
+    G4double xETROCRot, yETROCRot, zETROCRot;
+    G4double xETROCSize, yETROCSize, zETROCSize;
     LGADSignalShape *signalShape_;    
 
 };

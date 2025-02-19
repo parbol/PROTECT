@@ -8,10 +8,22 @@
 Layer::Layer(G4double xPos, G4double yPos, G4double zPos, 
              G4double xRot, G4double yRot, G4double zRot,
              G4double xSize, G4double ySize, G4double zSize,
+	     G4double xPosPlate, G4double yPosPlate, G4double zPosPlate,
+             G4double xRotPlate, G4double yRotPlate, G4double zRotPlate,
+             G4double xSizePlate, G4double ySizePlate, G4double zSizePlate,
              G4int ndet, G4int nlayer) :
              GeomObject(xPos, yPos, zPos, xRot, yRot, zRot, xSize, ySize, zSize) {
                 ndetId = ndet;
                 nlayerId = nlayer;
+		xPlatePos = xPosPlate;
+		yPlatePos = yPosPlate;
+		zPlatePos = zPosPlate;
+		xPlateRot = xRotPlate;
+		yPlateRot = yRotPlate;
+		zPlateRot = zRotPlate;
+		xPlateSize = xSizePlate;
+		yPlateSize = ySizePlate;
+		zPlateSize = zSizePlate;
              };
 //----------------------------------------------------------------------//
 //----------------------------------------------------------------------//
@@ -54,6 +66,7 @@ void Layer::createG4Objects(G4String name, G4LogicalVolume *mother,
                             std::map<G4String, G4Material*> & materials,
                             G4SDManager *SDman) {
 
+    //This is the active layer	
     G4String layerName = G4String("layer_") + name;  
     solidVolume = new G4Box(layerName, sizes[0]/2.0, sizes[1]/2.0, sizes[2]/2.0);
     logicalVolume = new G4LogicalVolume(solidVolume, materials["air"], layerName);
@@ -65,12 +78,14 @@ void Layer::createG4Objects(G4String name, G4LogicalVolume *mother,
     physicalVolume = new G4PVPlacement(getRot(), getPos(), 
                                        logicalVolume, layerPhysicalName,
                                        mother, false, 0, true);
+    
+    //This is the plate 
     G4String layerStrName = layerName + G4String("_str");
     G4String layerStrPhysName = layerPhysicalName + G4String("_str");
-    G4Box *layerStrSolid = new G4Box(layerStrName, sizes[0]/2.0, sizes[1]/2.0, 1.0*CLHEP::mm);
+    G4Box *layerStrSolid = new G4Box(layerStrName, xPlateSize/2.0, yPlateSize/2.0, zPlateSize/2.0);
     G4LogicalVolume *layerStrLog = new G4LogicalVolume(layerStrSolid, materials["carbon"], layerStrName);
-    G4VPhysicalVolume *layerStrVol = new G4PVPlacement(0, G4ThreeVector(0.,0.,0.), layerStrLog, layerStrPhysName,
-                                                        logicalVolume, false, 0, true);
+    G4VPhysicalVolume *layerStrVol = new G4PVPlacement(0, G4ThreeVector(xPlatePos,yPlatePos,zPlatePos), layerStrLog, layerStrPhysName,
+                                                        mother, false, 0, true);
     G4VisAttributes *attlog = new G4VisAttributes(false);
     attlog->SetVisibility(false);
     logicalVolume->SetVisAttributes(attlog);

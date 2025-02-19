@@ -88,7 +88,7 @@ if __name__=='__main__':
     phantoms[3]['radius'] = 2.0
     phantoms[3]['zsize'] = 0.5
 
-    #phantoms = []
+    phantoms = []
 
     data = {} 
     data['theWorld'] = theWorld
@@ -104,12 +104,25 @@ if __name__=='__main__':
     detectorXSize = [25, 25]
     detectorYSize = [25, 25]
     detectorZSize = [110, 110]
+    
+    sensZ = 0.03
+    etrocSizeZ = 0.2
+    plateSizeZ = 0.2
+    totalLayerSize = sensZ + etrocSizeZ + 0.01
+    
     layerXPosition = [0, 0, 0, 0]
     layerYPosition = [0, 0, 0, 0]
     layerZPosition = [50, 25, -25, -50]
     layerXSize = [24, 24, 24, 24]
     layerYSize = [24, 24, 24, 24]
-    layerZSize = [1, 1, 1, 1]
+    layerZSize = [totalLayerSize, totalLayerSize, totalLayerSize, totalLayerSize]
+    
+    plateXPosition = [0, 0, 0, 0]
+    plateYPosition = [0, 0, 0, 0]
+    plateZPosition = [layerZPosition[0]-totalLayerSize/2.0-plateSizeZ/2.0, layerZPosition[1]-totalLayerSize/2.0-plateSizeZ/2.0, layerZPosition[2]-totalLayerSize/2.0-plateSizeZ/2.0, layerZPosition[3]-totalLayerSize/2.0-plateSizeZ/2.0]
+    plateXSize = [24, 24, 24, 24]
+    plateYSize = [24, 24, 24, 24]
+    plateZSize = [plateSizeZ, plateSizeZ, plateSizeZ, plateSizeZ]
     sensorSize = 2.2
     centralCorridor = 0.2
     interpad = 0.05
@@ -122,35 +135,69 @@ if __name__=='__main__':
     sensorXSize = []
     sensorYSize = []
     sensorZSize = []
+    ETROCXPosition = []
+    ETROCYPosition = []
+    ETROCZPosition = []
+    ETROCXSize = []
+    ETROCYSize = []
+    ETROCZSize = []
     for ix in range(0, 4):
         for iy in range(0, 4):
             Xc = centralCorridor/2.0 + sensorSize/2.0 + ix * (sensorSize + centralCorridor)
             Yc = centralCorridor/2.0 + sensorSize/2.0 + iy * (sensorSize + centralCorridor)
+            Zc = (sensZ-etrocSizeZ)/2.0
+            ZcE = Zc + sensZ/2.0 + etrocSizeZ/2.0
             sensorXPosition.append(Xc)
             sensorYPosition.append(Yc)
-            sensorZPosition.append(0)
+            sensorZPosition.append(Zc)
             sensorXSize.append(sensorSize)
             sensorYSize.append(sensorSize)
-            sensorZSize.append(0.05)
+            sensorZSize.append(sensZ)
+            ETROCXPosition.append(Xc)
+            ETROCYPosition.append(Yc)
+            ETROCZPosition.append(ZcE)
+            ETROCXSize.append(sensorSize)
+            ETROCYSize.append(sensorSize)
+            ETROCZSize.append(etrocSizeZ)
+            
             sensorXPosition.append(-Xc)
             sensorYPosition.append(Yc)
-            sensorZPosition.append(0)
+            sensorZPosition.append(Zc)
             sensorXSize.append(sensorSize)
             sensorYSize.append(sensorSize)
-            sensorZSize.append(0.05 )
+            sensorZSize.append(sensZ)
+            ETROCXPosition.append(-Xc)
+            ETROCYPosition.append(Yc)
+            ETROCZPosition.append(ZcE)
+            ETROCXSize.append(sensorSize)
+            ETROCYSize.append(sensorSize)
+            ETROCZSize.append(etrocSizeZ)
             sensorXPosition.append(Xc)
             sensorYPosition.append(-Yc)
-            sensorZPosition.append(0)
+            sensorZPosition.append(Zc)
             sensorXSize.append(sensorSize)
             sensorYSize.append(sensorSize)
-            sensorZSize.append(0.05)
+            sensorZSize.append(sensZ)
+            ETROCXPosition.append(Xc)
+            ETROCYPosition.append(-Yc)
+            ETROCZPosition.append(ZcE)
+            ETROCXSize.append(sensorSize)
+            ETROCYSize.append(sensorSize)
+            ETROCZSize.append(etrocSizeZ)
+            
             sensorXPosition.append(-Xc)
             sensorYPosition.append(-Yc)
-            sensorZPosition.append(0)
+            sensorZPosition.append(Zc)
             sensorXSize.append(sensorSize)
             sensorYSize.append(sensorSize)
-            sensorZSize.append(0.05)
-            print(Xc, Yc)
+            sensorZSize.append(sensZ)
+            ETROCXPosition.append(-Xc)
+            ETROCYPosition.append(-Yc)
+            ETROCZPosition.append(ZcE)
+            ETROCXSize.append(sensorSize)
+            ETROCYSize.append(sensorSize)
+            ETROCZSize.append(etrocSizeZ)
+            
 
     for i, det_ in enumerate(data['Detectors']):
         det_['xPosDetector'] = detectorXPosition[i]  
@@ -166,6 +213,12 @@ if __name__=='__main__':
             layer_['xSizeLayer'] = layerXSize[j]
             layer_['ySizeLayer'] = layerYSize[j]
             layer_['zSizeLayer'] = layerZSize[j]
+            layer_['xPosPlate'] = plateXPosition[j]
+            layer_['yPosPlate'] = plateYPosition[j]
+            layer_['zPosPlate'] = plateZPosition[j]
+            layer_['xSizePlate'] = plateXSize[j]
+            layer_['ySizePlate'] = plateYSize[j]
+            layer_['zSizePlate'] = plateZSize[j]
             for k, sensor_ in enumerate(layer_['Sensors']):
                 sensor_['xPosSensor'] = sensorXPosition[k]
                 sensor_['yPosSensor'] = sensorYPosition[k]
@@ -173,6 +226,12 @@ if __name__=='__main__':
                 sensor_['xSizeSensor'] = sensorXSize[k]
                 sensor_['ySizeSensor'] = sensorYSize[k]
                 sensor_['zSizeSensor'] = sensorZSize[k]
+                sensor_['xPosETROC'] = ETROCXPosition[k]
+                sensor_['yPosETROC'] = ETROCYPosition[k]
+                sensor_['zPosETROC'] = ETROCZPosition[k]
+                sensor_['xSizeETROC'] = ETROCXSize[k]
+                sensor_['ySizeETROC'] = ETROCYSize[k]
+                sensor_['zSizeETROC'] = ETROCZSize[k]
                 sensor_['interPadx'] = interpad
                 sensor_['interPady'] = interpad
                 sensor_['gain'] = 10
