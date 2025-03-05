@@ -145,8 +145,9 @@ if __name__=='__main__':
         for iy in range(0, 4):
             Xc = centralCorridor/2.0 + sensorSize/2.0 + ix * (sensorSize + centralCorridor)
             Yc = centralCorridor/2.0 + sensorSize/2.0 + iy * (sensorSize + centralCorridor)
-            Zc = (sensZ-etrocSizeZ)/2.0
+            Zc = -totalLayerSize/2.0 + sensZ/2.0
             ZcE = Zc + sensZ/2.0 + etrocSizeZ/2.0
+
             sensorXPosition.append(Xc)
             sensorYPosition.append(Yc)
             sensorZPosition.append(Zc)
