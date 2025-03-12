@@ -46,6 +46,7 @@ private:
     G4int padx;
     G4int pady;
     G4int genID;
+    G4int genTrackID;
     G4ThreeVector localPos;
     G4ThreeVector globalPos;
     
@@ -128,6 +129,12 @@ public:
     }
     inline G4int GetGenID() {
         return genID;
+    }
+    inline void SetGenTrackID(G4int a) {
+        genTrackID = a;
+    }
+    inline G4int GetGenTrackID() {
+        return genTrackID;
     }
     inline void SetLocalPos(G4ThreeVector xyz) {
         localPos = xyz;

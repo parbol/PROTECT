@@ -136,6 +136,7 @@ void EventAction::EndOfEventAction(const G4Event* evt) {
             man->FillNtupleDColumn(13, i->second->genZ/CLHEP::cm);
             man->FillNtupleDColumn(14, i->second->genEnergy/CLHEP::MeV);
             man->FillNtupleIColumn(15, i->second->genID);
+            man->FillNtupleIColumn(16, i->second->genTrackID);
             man->AddNtupleRow(); 
         }
     }

@@ -58,6 +58,7 @@ LGADSensorHit::LGADSensorHit(const LGADSensorHit &right): G4VHit() {
     globalPos = right.globalPos;
     genEnergy = right.genEnergy;
     genID = right.genID; 
+    genTrackID = right.genTrackID; 
 }
 //----------------------------------------------------------------------//
 //----------------------------------------------------------------------//
@@ -82,6 +83,7 @@ const LGADSensorHit& LGADSensorHit::operator=(const LGADSensorHit &right) {
     globalPos = right.globalPos;
     genEnergy = right.genEnergy;
     genID = right.genID;
+    genTrackID = right.genTrackID;
     return *this;
 }
 //----------------------------------------------------------------------//

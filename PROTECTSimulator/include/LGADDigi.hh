@@ -38,6 +38,7 @@ public:
     G4double genX, genY, genZ;
     G4double genEnergy;
     G4int genID;
+    G4int genTrackID;
     LGADSignalShape *signalShape;
     LGADSensorHit *aHit;
 

@@ -32,6 +32,7 @@ LGADDigi::LGADDigi(LGADSensorHit *h, LGADSignalShape *shape) {
     genZ = h->GetLocalPos().z();
     genEnergy = h->GetGenEnergy();
     genID = h->GetGenID();
+    genTrackID = h->GetGenTrackID();
     eventNumber = h->GetEventNumber();
     signalShape = shape;
 

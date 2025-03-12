@@ -53,6 +53,7 @@ void RunAction::BeginOfRunAction(const G4Run* run) {
     man->CreateNtupleDColumn("genz");
     man->CreateNtupleDColumn("genEnergy");
     man->CreateNtupleIColumn("genID");
+    man->CreateNtupleIColumn("genTrackID");
     man->FinishNtuple();
 }
 //----------------------------------------------------------------------//
