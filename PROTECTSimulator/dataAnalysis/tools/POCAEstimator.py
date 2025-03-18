@@ -172,28 +172,41 @@ class POCAEstimator:
 
     def getPoint(self, x1, x2, p1, p2, k1, k2, thetax, thetay):
 
-        b1 = k1 / math.sqrt(k1**2 + 105.66**2)
-        b2 = k2 / math.sqrt(k2**2 + 105.66**2)
-        momentum = (k1+k2)/2.0
-        beta = (b1+b2)/2.0
-        betap = momentum * beta
+          r1 = r.TVectorD(3)
+          r2 = r.TVectorD(3)
+          w1 = r.TVectorD(3)
+          r2 = r.TVectorD(3)
+          r1[0] = x1[0]
+          r1[1] = x1[1]
+          r1[2] = x1[2]
+          r2[0] = x2[0]
+          r2[1] = x2[1]
+          r2[2] = x2[2] 
+          w1[0] = p1[0]
+          w1[1] = p1[1]
+          w1[2] = p1[2]
+          w2[0] = p2[0]
+          w2[1] = p2[1]
+          w2[2] = p2[2]
+          
+          D = r.TMatrixD(2,2)
+          D[0][0] = w1 * w1
+          D[1][0] = -1.0 * w1 * w2
+          D[0][1] = -1.0 * w1 * w2
+          D[1][1] = w2 * w2
+          b = r.TVectorD(2)
+          b[0] = r2 * w1 - r1 * w1
+          b[1] = r1 * w2 - r2 * w2; 
+          if math.fabs(D.Determinant()) < 1e-10):
+              continue
+          det = 0
+          Dinv = D.Invert(det)
+          if(det == 0):
+              continue
+		  sol = Dinv * b;
+		  pocaPoint = 0.5 * (r1 + sol[0] * w1 + r2 + sol[1] * w2)
 
-        cross_st = self.cross(p1, p2)
-        cross_stnorm = self.norm(cross_st)
-        vts = self.dot(p1, p2)
-        if cross_stnorm < 1.0e-6 or vts < 1.0e-6:
-            return False, [0, 0, 0]
-        
-        cross_sst = self.cross(p1, cross_st)
-        DeltaR = self.minus(x1, x2)
-        
-        xproj = x2[0] + (20.0-x2[2])/p2[2] * p2[0]
-        yproj = x2[1] + (20.0-x2[2])/p2[2] * p2[1]
-        self.hxyproj.Fill(xproj, yproj)
-        xpoca2 = self.minus(x2, self.multiply(p2, self.dot(DeltaR, cross_sst)/cross_stnorm**2))
-        xpoca1 = self.plus(x1, self.multiply(p1, self.dot(self.minus(xpoca2, x1), p1)/vts))
-        v = self.multiply(self.plus(xpoca1, xpoca2), 0.5)
-        return True, v
+          return True, [pocaPoint[0], pocaPoint[1], pocaPoint[2]]
 
 
     def makeVar(self):
