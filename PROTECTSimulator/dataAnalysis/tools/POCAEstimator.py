@@ -1,6 +1,6 @@
 import ROOT as r
 import math
-
+import numpy as np
 
 
     
@@ -130,69 +130,22 @@ class POCAEstimator:
                 self.hyz_theta2.SetBinContent(binyz, valyz2 + ev.dthetax**2 + ev.dthetay**2)
         self.makeVar()
 
-    def cross(self, v1, v2):
 
-        a = [0.0, 0.0, 0.0]
-        a[0] = v1[1] * v2[2] - v1[2] * v2[1]
-        a[1] = v1[2] * v2[0] - v1[0] * v2[2]
-        a[2] = v1[0] * v2[1] - v1[1] * v2[0]
-        return a
+    def getPoint(self, r1, r2, v1, v2, k1, k2, thetax, thetay):
 
-    def dot(self, v1, v2):
+        v3 = np.cross(v1, v2)
+        v2_cross_v3 = np.cross(v2, v3)
+        det = np.dot(v1, -v2_cross_v3)
 
-        return v1[0]*v2[0] + v1[1]*v2[1] + v1[2] * v2[2]
-
-    def norm(self, v):
-
-        return math.sqrt(v[0]**2+v[1]**2+v[2]**2)
-
-    def normalize(self, v):
-        n = self.norm(v)
-        a = v
-        a[0] = v[0]/n
-        a[1] = v[1]/n
-        a[2] = v[2]/n
-        return a
-
-    def minus(self, v1, v2):
-
-        return [v1[0]-v2[0], v1[1]-v2[1], v1[2]-v2[2]]
-    
-    def plus(self, v1, v2):
-
-        return [v1[0]+v2[0], v1[1]+v2[1], v1[2]+v2[2]]
-
-    def divide(self, v1, k):
-
-        return [v1[0]/k, v1[1]/k, v1[2]/k]
-    
-    def multiply(self, v1, k):
-
-        return [v1[0]*k, v1[1]*k, v1[2]*k]
-
-    def getPoint(self, x1, x2, p1, p2, k1, k2, thetax, thetay):
-
-        b1 = k1 / math.sqrt(k1**2 + 105.66**2)
-        b2 = k2 / math.sqrt(k2**2 + 105.66**2)
-        momentum = (k1+k2)/2.0
-        beta = (b1+b2)/2.0
-        betap = momentum * beta
-
-        cross_st = self.cross(p1, p2)
-        cross_stnorm = self.norm(cross_st)
-        vts = self.dot(p1, p2)
-        if cross_stnorm < 1.0e-6 or vts < 1.0e-6:
+        if np.abs(det) < 1.0e-6 or np.isnan(det):
             return False, [0, 0, 0]
-        
-        cross_sst = self.cross(p1, cross_st)
-        DeltaR = self.minus(x1, x2)
-        
-        xproj = x2[0] + (20.0-x2[2])/p2[2] * p2[0]
-        yproj = x2[1] + (20.0-x2[2])/p2[2] * p2[1]
-        self.hxyproj.Fill(xproj, yproj)
-        xpoca2 = self.minus(x2, self.multiply(p2, self.dot(DeltaR, cross_sst)/cross_stnorm**2))
-        xpoca1 = self.plus(x1, self.multiply(p1, self.dot(self.minus(xpoca2, x1), p1)/vts))
-        v = self.multiply(self.plus(xpoca1, xpoca2), 0.5)
+    
+        inv_det = 1/det
+        delta_r = r1 - r2
+        v1_cross_v3 = np.cross(v1, v3)
+        xpoca1 = r1 + v1 * np.dot(delta_r, v2_cross_v3) * inv_det
+        xpoca2 = r2 + v2 * np.dot(delta_r, v1_cross_v3) * inv_det
+        v = 0.5 * (xpoca1 + xpoca2)
         return True, v
 
 
