@@ -14,7 +14,7 @@
         "zBeamPosition": 125,
         "maxOpenAngle": 0.12,
         "nStep": 200,
-        "nParticles": 5,
+        "nParticles": 1,
         "nParticlesDistribution": "Constant",
         "momentum": 200,
         "momentumSigma": 1,

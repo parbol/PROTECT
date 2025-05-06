@@ -1,5 +1,5 @@
 import json, sys, optparse
-
+import math
 #######################################################################
 # This is a helper class to produce configuration files for the setup #
 # Notice that here we are assuming that each detector/layer/sensor is #
@@ -19,8 +19,9 @@ if __name__=='__main__':
     nPhantoms = 4
     nDetectors = 2
     nLayers = 4
-    nSensors = 64
- 
+    nSensors =256 
+    Ndet = int(math.sqrt(nSensors))
+
     #We take the structure from this basic json file and adapt the dictionary
     with open('../data/confExample.json', 'r') as f:
         data_ = json.load(f)
@@ -88,7 +89,7 @@ if __name__=='__main__':
     phantoms[3]['radius'] = 2.0
     phantoms[3]['zsize'] = 0.5
 
-    phantoms = []
+    #phantoms = []
 
     data = {} 
     data['theWorld'] = theWorld
@@ -101,32 +102,32 @@ if __name__=='__main__':
     detectorXPosition = [0, 0]
     detectorYPosition = [0, 0]
     detectorZPosition = [70, -70]
-    detectorXSize = [25, 25]
-    detectorYSize = [25, 25]
+    detectorXSize = [50, 50]
+    detectorYSize = [50, 50]
     detectorZSize = [110, 110]
     
     sensZ = 0.03
-    etrocSizeZ = 0.2
-    plateSizeZ = 0.2
+    etrocSizeZ = 0.01
+    plateSizeZ = 0.001
     totalLayerSize = sensZ + etrocSizeZ + 0.01
     
     layerXPosition = [0, 0, 0, 0]
     layerYPosition = [0, 0, 0, 0]
     layerZPosition = [50, 25, -25, -50]
-    layerXSize = [24, 24, 24, 24]
-    layerYSize = [24, 24, 24, 24]
+    layerXSize = [48, 48, 48, 48]
+    layerYSize = [48, 48, 48, 48]
     layerZSize = [totalLayerSize, totalLayerSize, totalLayerSize, totalLayerSize]
     
     plateXPosition = [0, 0, 0, 0]
     plateYPosition = [0, 0, 0, 0]
     plateZPosition = [layerZPosition[0]-totalLayerSize/2.0-plateSizeZ/2.0, layerZPosition[1]-totalLayerSize/2.0-plateSizeZ/2.0, layerZPosition[2]-totalLayerSize/2.0-plateSizeZ/2.0, layerZPosition[3]-totalLayerSize/2.0-plateSizeZ/2.0]
-    plateXSize = [24, 24, 24, 24]
-    plateYSize = [24, 24, 24, 24]
+    plateXSize = [48, 48, 48, 48]
+    plateYSize = [48, 48, 48, 48]
     plateZSize = [plateSizeZ, plateSizeZ, plateSizeZ, plateSizeZ]
     sensorSize = 2.2
-    centralCorridor = 0.2
-    interpad = 0.05
-    L = (8.0*sensorSize+6.0*centralCorridor)
+    centralCorridor = 0.1
+    interpad = 0.01
+    L = (Ndet*sensorSize+(Ndet-2)*centralCorridor)
     posX = -L/2.0 + sensorSize / 2.0
     posY = -L/2.0 + sensorSize / 2.0
     sensorXPosition = []
@@ -141,8 +142,8 @@ if __name__=='__main__':
     ETROCXSize = []
     ETROCYSize = []
     ETROCZSize = []
-    for ix in range(0, 4):
-        for iy in range(0, 4):
+    for ix in range(0, int(Ndet/2)):
+        for iy in range(0, int(Ndet/2)):
             Xc = centralCorridor/2.0 + sensorSize/2.0 + ix * (sensorSize + centralCorridor)
             Yc = centralCorridor/2.0 + sensorSize/2.0 + iy * (sensorSize + centralCorridor)
             Zc = -totalLayerSize/2.0 + sensZ/2.0
