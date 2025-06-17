@@ -33,6 +33,8 @@ if __name__=='__main__':
     layer = detector['Layers'][0]
     sensor = layer['Sensors'][0]
 
+    theWorld["xSizeWorld"] = 250
+    theWorld["ySizeWorld"] = 250
     theWorld["zSizeWorld"] = 250
     
     sensors = []
@@ -99,12 +101,25 @@ if __name__=='__main__':
 
     
     #This must be configured for every setup 
-    detectorXPosition = [0, 0]
-    detectorYPosition = [0, 0]
-    detectorZPosition = [70, -70]
+    Yrot = 45.0
+    Xrot = 0.0
+    Yrotr = Yrot * math.pi/180.0
+    Xrotr = Xrot * math.pi/180.0
+    z1 = 70.0
+    v1y = [-math.sin(Yrotr) * z1, 0, math.cos(Yrotr) * z1]
+    v1 = [v1y[0], -math.sin(Xrotr) * v1y[2], math.cos(Xrotr) * v1y[2]]
+    z2 = -70.0
+    v2y = [-math.sin(Yrotr) * z2, 0, math.cos(Yrotr) * z2]
+    v2 = [v2y[0], -math.sin(Xrotr) * v2y[2], math.cos(Xrotr) * v2y[2]]
+
+    detectorXPosition = [v1[0], v2[0]]
+    detectorYPosition = [v1[1], v2[1]]
+    detectorZPosition = [v1[2], v2[2]]
     detectorXSize = [50, 50]
     detectorYSize = [50, 50]
     detectorZSize = [110, 110]
+    detectorXRot = [Xrot, Xrot]
+    detectorYRot = [Yrot, Yrot]
     
     sensZ = 0.03
     etrocSizeZ = 0.01
@@ -208,6 +223,9 @@ if __name__=='__main__':
         det_['xSizeDetector'] = detectorXSize[i]
         det_['ySizeDetector'] = detectorYSize[i]
         det_['zSizeDetector'] = detectorZSize[i]
+        det_['xDirDetector'] = detectorXRot[i]
+        det_['yDirDetector'] = detectorYRot[i]
+        det_['zDirDetector'] = 0.0
         for j, layer_ in enumerate(det_['Layers']):
             layer_['xPosLayer'] = layerXPosition[j]
             layer_['yPosLayer'] = layerYPosition[j]
