@@ -93,6 +93,10 @@ if __name__=='__main__':
 
     #phantoms = []
 
+    theBeam['xDir'] = 0.0;
+    theBeam['yDir'] = 0.0;
+
+
     data = {} 
     data['theWorld'] = theWorld
     data['theBeam'] = theBeam

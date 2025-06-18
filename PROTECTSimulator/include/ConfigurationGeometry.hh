@@ -48,6 +48,9 @@ public:
     G4double GetYBeamPosition();
     G4double GetYBeamSigma();
     G4double GetZBeamPosition();
+    G4double GetXDirBeam();
+    G4double GetYDirBeam();
+    G4double GetZDirBeam();
     G4double GetMomentum();
     G4int GetNStep();
     G4double GetMomentumSigma();
@@ -81,6 +84,7 @@ private:
     G4double xBeamPosition, xBeamSigma;
     G4double yBeamPosition, yBeamSigma;
     G4double zBeamPosition;
+    G4double xBeamDir, yBeamDir, zBeamDir;
     G4double p, pSigma;
     G4double tBeamSigma;
     G4double maxOpenAngle;
@@ -92,6 +96,12 @@ private:
     std::vector <Phantom *> phantoms;
     bool goodGeometry;
     LGADSignalShape *signalShape;
+
+    G4VSolid *coneVolume;
+    G4LogicalVolume *conelogicalVolume;
+    G4VPhysicalVolume *conePhysical;
+
+
 };
 
 

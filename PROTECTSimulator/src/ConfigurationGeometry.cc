@@ -14,6 +14,7 @@
 #include "ConfigurationGeometry.hh"
 #include <json/json.h>
 #include <json/value.h>
+#include "G4VisAttributes.hh"
 
 
 
@@ -74,6 +75,9 @@ ConfigurationGeometry::ConfigurationGeometry(G4String file) {
         yBeamPosition = atof(root["theBeam"]["yBeamPosition"].asString().c_str());
         yBeamSigma = atof(root["theBeam"]["yBeamSigma"].asString().c_str());    
         zBeamPosition = atof(root["theBeam"]["zBeamPosition"].asString().c_str());
+        xBeamDir = atof(root["theBeam"]["xDir"].asString().c_str()) * CLHEP::degree;
+        yBeamDir = atof(root["theBeam"]["yDir"].asString().c_str()) * CLHEP::degree;
+        zBeamDir = atof(root["theBeam"]["zDir"].asString().c_str()) * CLHEP::degree;
         p = atof(root["theBeam"]["momentum"].asString().c_str());
         pSigma = atof(root["theBeam"]["momentumSigma"].asString().c_str());
         tBeamSigma = atof(root["theBeam"]["tBeamSigma"].asString().c_str());
@@ -131,7 +135,7 @@ ConfigurationGeometry::ConfigurationGeometry(G4String file) {
                 goodGeometry = false;
                 return;
             }
-            Detector *detector = new Detector(xPos, yPos, zPos, xDir, yDir, zDir, xSize, ySize, zSize, xangle, yangle, idet);
+            Detector *detector = new Detector(xPos, yPos, zPos, xDir, yDir, zDir, xSize, ySize, zSize, idet);
             
             //Layers inside a detector ----------------------------------------------
 	        const Json::Value jLayer = root["Detectors"][idet]["Layers"];
@@ -330,6 +334,36 @@ G4double ConfigurationGeometry::GetZBeamPosition() {
 //----------------------------------------------------------------------//
 // Accesor to class information                                         //
 //----------------------------------------------------------------------//
+G4double ConfigurationGeometry::GetXDirBeam() {
+    return xBeamDir;
+}
+//----------------------------------------------------------------------//
+//----------------------------------------------------------------------//
+
+
+//----------------------------------------------------------------------//
+// Accesor to class information                                         //
+//----------------------------------------------------------------------//
+G4double ConfigurationGeometry::GetYDirBeam() {
+    return yBeamDir;
+}
+//----------------------------------------------------------------------//
+//----------------------------------------------------------------------//
+
+
+//----------------------------------------------------------------------//
+// Accesor to class information                                         //
+//----------------------------------------------------------------------//
+G4double ConfigurationGeometry::GetZDirBeam() {
+    return zBeamDir;
+}
+//----------------------------------------------------------------------//
+//----------------------------------------------------------------------//
+
+
+//----------------------------------------------------------------------//
+// Accesor to class information                                         //
+//----------------------------------------------------------------------//
 G4double ConfigurationGeometry::GetMomentum() {
     return p;
 }
@@ -432,6 +466,24 @@ G4int ConfigurationGeometry::getNDetectors() {
 void ConfigurationGeometry::createG4objects(G4LogicalVolume *mother, 
                                             std::map<G4String, G4Material *> &materials, 
                                             G4SDManager *SDman) {
+
+
+    G4ThreeVector pos;
+    pos.setX(0);
+    pos.setY(0);
+    pos.setZ(GetZBeamPosition());
+    G4RotationMatrix rot;
+    rot.rotateY(yBeamDir);
+    rot.rotateX(xBeamDir);
+    G4ThreeVector newpos = rot * pos;
+
+    coneVolume = new G4Cons("gantry", 0.5*CLHEP::cm, 1.0*CLHEP::cm, 3.0*CLHEP::cm, 3.5*CLHEP::cm, 5.0*CLHEP::cm, 0.0, 3.14159287);
+    conelogicalVolume = new G4LogicalVolume(coneVolume, materials["steel"], "gantrylogical");
+    conePhysical = new G4PVPlacement(&rot, newpos, conelogicalVolume, "gantryphysical", mother, false, 0, true);
+
+    G4VisAttributes *attlog = new G4VisAttributes(false);
+    attlog->SetVisibility(false);
+    conelogicalVolume->SetVisAttributes(attlog);
 
     for(int i = 0; i < detectors.size(); i++) {
         detectors[i]->createG4Objects(G4String(std::to_string(detectors[i]->detId())),

@@ -3,6 +3,8 @@
 
 #include "Randomize.hh"
 #include "ConfigurationGeometry.hh"
+#include "G4RotationMatrix.hh"
+#include "G4ThreeVector.hh"
 
 
 class Beam {
@@ -21,6 +23,7 @@ private:
     CLHEP::RandGauss* myGauss;
     CLHEP::RandPoisson* myPoiss;
 
+    G4RotationMatrix rot;
     G4double vx, vy, vz;
     G4double step;
     G4int debug;
