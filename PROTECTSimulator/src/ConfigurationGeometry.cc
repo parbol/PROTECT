@@ -477,12 +477,13 @@ void ConfigurationGeometry::createG4objects(G4LogicalVolume *mother,
     rot.rotateX(xBeamDir);
     G4ThreeVector newpos = rot * pos;
 
-    coneVolume = new G4Cons("gantry", 0.5*CLHEP::cm, 1.0*CLHEP::cm, 3.0*CLHEP::cm, 3.5*CLHEP::cm, 5.0*CLHEP::cm, 0.0, 3.14159287);
+    G4cout << "Mierda " << newpos << G4endl; 
+    coneVolume = new G4Cons("gantry", 0.5*CLHEP::cm, 1.0*CLHEP::cm, 3.0*CLHEP::cm, 3.5*CLHEP::cm, 5.0*CLHEP::cm, 0.0, 2.0*3.14159287);
     conelogicalVolume = new G4LogicalVolume(coneVolume, materials["steel"], "gantrylogical");
     conePhysical = new G4PVPlacement(&rot, newpos, conelogicalVolume, "gantryphysical", mother, false, 0, true);
 
-    G4VisAttributes *attlog = new G4VisAttributes(false);
-    attlog->SetVisibility(false);
+    G4Colour silicon(238.0/256.0, 162.0/256.0, 11.0/256.0);
+    G4VisAttributes *attlog = new G4VisAttributes(silicon);
     conelogicalVolume->SetVisAttributes(attlog);
 
     for(int i = 0; i < detectors.size(); i++) {
