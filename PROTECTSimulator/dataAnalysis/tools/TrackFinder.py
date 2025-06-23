@@ -19,8 +19,18 @@ class TrackFinder:
             if ev.det[i] == 1:
                 layers2[ev.layer[i]].append(i)
 
-        bestTrack1 = self.runDetector(layers1, ev)
-        bestTrack2 = self.runDetector(layers2, ev)
+        layer1Complete = True
+        for l in layers2:
+            if len(l) == 0:
+                return False
+        for l in layers1:
+            if len(l) == 0:
+                layer1Complete = False
+        
+        if layer1Complete:
+            tracks1 = self.runDetector(layers1, ev)
+        tracks2 = self.runDetector(layers2, ev)
+       
         self.track1 = Track() 
         for layer in bestTrack1:
             self.track1.insertHit(ev.x[layer], ev.y[layer], ev.z[layer], ev.toa[layer], ev.genEnergy[layer])
@@ -32,8 +42,9 @@ class TrackFinder:
 
     
     def runDetector(self, layers, ev):
-       
-        chi2Min = 1e20
+        
+        #First we make all the possible tracks with chi2 smaller than a given threshold
+        chi2threshold = 1.0
         theElement = (0)
         cartesian = itertools.product(*layers)
         for element in cartesian:
@@ -41,9 +52,11 @@ class TrackFinder:
             for layer in element:
                 t.insertHit(ev.x[layer], ev.y[layer], ev.z[layer], ev.toa[layer], ev.genEnergy[layer])
             t.build()
-            if t.chi2 < chi2Min:
-                chi2Min = t.chi2
-                theElement = element
+            if t.chi2 < chi2threshold:
+                tracks.append(t)
+        #We sort the list by chi2
+        listOfHits = []
+         
         return theElement
 
 

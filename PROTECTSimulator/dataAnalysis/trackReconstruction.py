@@ -18,23 +18,6 @@ def correctAngle(vx, vz):
         return math.pi - math.atan2(vx, -vz)
 
 
-def correctNumberOfHits(ev):
-
-    if ev.nhits < 8:
-        return False
-    seq = [0, 1, 2, 3, 4, 5, 6, 7]    
-    counter = 0
-    for i in range(0, ev.nhits):
-        n = ev.det[i] * 4 + ev.layer[i]
-        if n in seq:
-            seq.remove(n)
-            counter = counter + 1
-    
-    if counter == 8:
-        return True
-    return False
-
-
 
 if __name__ == '__main__':
 
@@ -101,8 +84,6 @@ if __name__ == '__main__':
 
     for ev in input.events:
 
-        if not correctNumberOfHits(ev):
-            continue
         tf = TrackFinder(ev, 4)
         nevent[0] = ev.nevent
         x1[0] = tf.track1.x0
