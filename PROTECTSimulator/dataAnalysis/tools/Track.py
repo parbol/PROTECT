@@ -1,69 +1,93 @@
+import math
+
 class Track:
 
     def __init__(self):
 
+        self.c = 29.9792458 #cm/ns 
+        self.mp = 938.27208943 #MeV
+        self.et = 0.035 #ns
+        self.es = 0.038
         self.x0 = 0
         self.y0 = 0
         self.z0 = 0
+        self.t0 = 0
         self.bx = 0
         self.by = 0
         self.bz = 0
-        self.chi2 = 0
+        self.rmss = 0
+        self.rmst = 0
+        self.p = 0
+        self.genID = 0
         self.hits = []
-        self.xt = 0
-        self.yt = 0
-        self.zt = 0
-        self.t = 0
-        self.t2 = 0
 
-    def insertHit(self, x, y, z, t, energy):
+    def insertHit(self, x, y, z, t, energy, genTrackID, genID):
 
-        hit = [x, y, z, t, energy]
+        hit = [x, y, z, t, energy, genTrackID, genID]
         self.hits.append(hit)
+
+    def isGenTrack(self):
+
+        if len(self.hits) == 0:
+            return False
+        gTr = self.hits[0][5] 
+        gID = self.hits[0][6]
+        if gID != 2212:
+            return False
+        for h in self.hits:
+            if gTr != h[5]:
+                return False
+        return True
 
     def build(self):
 
-        x = y = z = 0.
-        x2 = y2 = z2 = 0.
+        x = y = z = t = 0.
+        z2 = 0.
+        xz = yz = tz = 0.
         
         for h in self.hits:
             x = x + h[0]
-            x2 = x2 + h[0]**2
+            xz = xz + h[0] * h[2]
             y = y + h[1]
-            y2 = y2 + h[1]**2
+            yz = yz + h[1] * h[2]
+            t = t + h[3]
+            tz = tz + h[3] * h[2]
             z = z + h[2]
             z2 = z2 + h[2]**2
-            self.t = self.t + h[3]
-            self.t2 = self.t2 + h[3]**2
-            self.xt = self.xt + h[0]*h[3]
-            self.yt = self.yt + h[1]*h[3]
-            self.zt = self.zt + h[2]*h[3]
         x = x/len(self.hits)
-        x2 = x2/len(self.hits)
+        xz = xz/len(self.hits)
         y = y/len(self.hits)
-        y2 = y2/len(self.hits)
+        yz = yz/len(self.hits)
+        t = t/len(self.hits)
+        tz = tz/len(self.hits)
         z = z/len(self.hits)
         z2 = z2/len(self.hits)
-        self.t = self.t/len(self.hits)
-        self.t2 = self.t2/len(self.hits)
-        self.xt = self.xt/len(self.hits)
-        self.yt = self.yt/len(self.hits)
-        self.zt = self.zt/len(self.hits)
-
-        self.bx = (self.xt - x * self.t)/(self.t2-self.t*self.t)
-        self.by = (self.yt - y * self.t)/(self.t2-self.t*self.t)
-        self.bz = (self.zt - z * self.t)/(self.t2-self.t*self.t)
-        self.x0 = x - self.bx*self.t
-        self.y0 = y - self.by*self.t
-        self.z0 = z - self.bz*self.t
-
-        xplus = yplus = zplus = 0.0
+        deltaz = z2 - z*z
+        alphax = (xz - x * z) / deltaz
+        alphay = (yz - y * z) / deltaz
+        alphat = (tz - t * z) / deltaz
+        
+        self.x0 = x - alphax * z
+        self.y0 = y - alphay * z
+        self.t0 = t - alphat * z
+        self.z0 = 0.0
+        self.bx = (alphax/alphat) / self.c
+        self.by = (alphay/alphat) / self.c
+        self.bz = (1.0/alphat) / self.c
+        beta = math.sqrt(self.bx*self.bx+self.by*self.by+self.bz*self.bz)
+        if beta >= 1.0:
+            beta = -1
+        else:
+            gamma = 1.0/math.sqrt(1.0 - beta*beta)
+            self.p = beta * gamma * self.mp
+        xplus = yplus = tplus = 0.0
         for h in self.hits:
-            xplus = xplus + (h[0]-self.x0-self.bx*h[3])**2
-            yplus = yplus + (h[1]-self.y0-self.by*h[3])**2
-            zplus = zplus + (h[2]-self.z0-self.bz*h[3])**2
-        self.chi2 = xplus+yplus+zplus    
-
+            xplus = xplus + (h[0]-self.x0-alphax*h[2])**2
+            yplus = yplus + (h[1]-self.y0-alphay*h[2])**2
+            tplus = tplus + (h[3]-self.t0-alphat*h[2])**2
+        self.rmss = math.sqrt((xplus+yplus)/len(self.hits))
+        self.rmst = math.sqrt(tplus/len(self.hits))
+        self.genID = self.hits[0][6]
 
     def print(self):
 
