@@ -23,7 +23,7 @@ GeomObject::GeomObject(G4double xPos, G4double yPos, G4double zPos, G4double xRo
     superVector = new G4ErrorMatrix(6, 1);
     for(G4int a = 0; a < 3; a++) {
         for(G4int b = 0; b < 3; b++) {
-            (*superMatrix)[a][b] = invrot[a][b];
+	    (*superMatrix)[a][b] = invrot[a][b];
             (*superMatrix)[a+3][b+3] = invrot[a][b];
         }
         (*superVector)[a][0] = pos[a];
