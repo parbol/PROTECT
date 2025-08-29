@@ -93,8 +93,8 @@ if __name__=='__main__':
 
     #phantoms = []
 
-    Yrot = 30.0
-    Xrot = 60.0
+    Yrot = 0.0
+    Xrot = 0.0
     theBeam['xDir'] = Xrot
     theBeam['yDir'] = Yrot
 

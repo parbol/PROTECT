@@ -6,6 +6,9 @@ class TrackFinder:
 
     def __init__(self, ev, nlayers):
 
+
+        self.printHits(ev)
+        self.nGenTracks = max(ev.genTrackID)
         self.isValid = True
         self.tracks1 = []
         self.tracks2 = []
@@ -31,13 +34,13 @@ class TrackFinder:
             if len(l) == 0:
                 layer1Complete = False
                 break
+
         if not layer2Complete:
             self.isValid = False
         else:
             if layer1Complete:
                 self.tracks1 = self.runDetector(layers1, ev)
             self.tracks2 = self.runDetector(layers2, ev)
-            #self.makeAssociation(tracks1, tracks2)
         if len(self.tracks2) == 0:
             self.isValid = False
 
@@ -92,6 +95,14 @@ class TrackFinder:
         for i in range(0, len(sortedTracks)):
             if self.addHitToList(listOfHits, sortedTracks[i]):
                 finalTracks.append(sortedTracks[i])
+       
         return finalTracks
 
+
+
+    def printHits(self, ev):
+
+        print('---------------------List of hits------------------------')
+        for i, det in enumerate(ev.det):
+            print('det:', ev.det[i], 'layer:', ev.layer[i], 'x:', ev.x[i], 'y:', ev.y[i], 'z:', ev.z[i], 't:', ev.toa[i], 'genTrack:', ev.genTrackID[i], 'genID:', ev.genID[i])
 
