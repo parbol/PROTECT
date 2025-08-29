@@ -19,6 +19,7 @@ class Event:
         self.gentoa = []
         self.genEnergy = []
         self.genID = []
+        self.genTrackID = []
         self.localgenx = []
         self.localgeny = []
         self.localgenz = []
@@ -29,7 +30,6 @@ class Event:
         self.geny = []
         self.genz = []
         self.charge = []
-        self.genTrackID = []
 
     def add(self, det_, layer_, lgad_, xpad_, ypad_, toa_, tot_, charge_, genEnergy_, gentoa_, genx_, geny_, genz_, genID_, genTrackID_):
         

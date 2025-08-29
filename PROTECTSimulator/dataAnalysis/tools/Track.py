@@ -19,6 +19,7 @@ class Track:
         self.rmst = 0
         self.p = 0
         self.genID = 0
+        self.genTrackID = 0
         self.hits = []
 
     def insertHit(self, x, y, z, t, energy, genTrackID, genID):
@@ -44,7 +45,7 @@ class Track:
         x = y = z = t = 0.
         z2 = 0.
         xz = yz = tz = 0.
-        
+
         for h in self.hits:
             x = x + h[0]
             xz = xz + h[0] * h[2]
@@ -70,7 +71,7 @@ class Track:
         self.x0 = x - alphax * z
         self.y0 = y - alphay * z
         self.t0 = t - alphat * z
-        self.z0 = 0.0
+        self.z0 = 0
         self.bx = (alphax/alphat) / self.c
         self.by = (alphay/alphat) / self.c
         self.bz = (1.0/alphat) / self.c
@@ -88,6 +89,7 @@ class Track:
         self.rmss = math.sqrt((xplus+yplus)/len(self.hits))
         self.rmst = math.sqrt(tplus/len(self.hits))
         self.genID = self.hits[0][6]
+        self.genTrackID = self.hits[0][5]
 
     def print(self):
 

@@ -13,7 +13,7 @@ fi
 if [ $HOSTNAME == "deep-gan" ]; then
         echo "Setting up environment in deep gan"
         export G4INSTALLDIR=/home/leire/geant4-v11.1.2-install/
-        export G4WORKDIR=/home/leire/PROTECT/PROTECTSimulator/
+        export G4WORKDIR=/home/leire/PROTECTNewPablo/PROTECTSimulator/
         export JSONCPPDIR=/home/leire/jsoncpp/
         source $G4INSTALLDIR/bin/geant4.sh
         export PYTHONPATH=$G4WORKDIR/dataAnalysis/

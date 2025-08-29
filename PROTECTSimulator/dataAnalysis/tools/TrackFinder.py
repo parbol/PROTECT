@@ -14,13 +14,13 @@ class TrackFinder:
         for i in range(0, nlayers):
             layers1.append([])
             layers2.append([])
-       
+
         for i in range(0, ev.nhits):
             if ev.det[i] == 0:
                 layers1[ev.layer[i]].append(i)
             if ev.det[i] == 1:
                 layers2[ev.layer[i]].append(i)
-        
+
         layer1Complete = True
         layer2Complete = True
         for l in layers2:
@@ -54,7 +54,7 @@ class TrackFinder:
                     score = self.compatibility(tr1, tr2)
                     if score > thresholdScore:
                         continue
-                     
+
 
     def addHitToList(self, listOfHits, track):
 
@@ -66,9 +66,9 @@ class TrackFinder:
                 return False
         listOfHits.append(newhits)
         return True
-    
+
     def runDetector(self, layers, ev):
-        
+
         tracks = []
         #First we make all the possible tracks with chi2 smaller than a given threshold
         rmssthreshold = 1.0 #cm
@@ -89,12 +89,9 @@ class TrackFinder:
         #Finally we remove tracks that are using hits that have been already used
         listOfHits = []
         finalTracks = []
-        for i in range(0, len(sortedTracks)): 
+        for i in range(0, len(sortedTracks)):
             if self.addHitToList(listOfHits, sortedTracks[i]):
                 finalTracks.append(sortedTracks[i])
         return finalTracks
-
-
-        
 
 
