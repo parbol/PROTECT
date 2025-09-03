@@ -35,15 +35,18 @@ class TrackFinder:
                 layer1Complete = False
                 break
 
-        if not layer2Complete:
-            self.isValid = False
-        else:
-            if layer1Complete:
-                self.tracks1 = self.runDetector(layers1, ev)
+
+#        if not layer2Complete:
+#            self.isValid = False
+#        else:
+        if layer1Complete:
+            self.tracks1 = self.runDetector(layers1, ev)
+        if layer2Complete:
             self.tracks2 = self.runDetector(layers2, ev)
         if len(self.tracks2) == 0:
             self.isValid = False
 
+    """
     def makeAssociation(self, tracks1, tracks2):
 
         thresholdScore = 1.0
@@ -70,6 +73,8 @@ class TrackFinder:
         listOfHits.append(newhits)
         return True
 
+    """
+
     def runDetector(self, layers, ev):
 
         tracks = []
@@ -83,26 +88,30 @@ class TrackFinder:
             for layer in element:
                 t.insertHit(ev.x[layer], ev.y[layer], ev.z[layer], ev.toa[layer], ev.genEnergy[layer], ev.genTrackID[layer], ev.genID[layer])
             t.build()
-            if not t.isGenTrack():
-                continue
             if t.rmst < rmstthreshold and t.rmss < rmssthreshold:
                 tracks.append(t)
         #We sort the list by chi2
         sortedTracks = sorted(tracks, key=lambda track: track.rmss)
         #Finally we remove tracks that are using hits that have been already used
-        listOfHits = []
+        usedHits = set()
+#        listOfHits = []
         finalTracks = []
-        for i in range(0, len(sortedTracks)):
-            if self.addHitToList(listOfHits, sortedTracks[i]):
-                finalTracks.append(sortedTracks[i])
-       
+        for tr in sortedTracks:
+            hit_tuples = [tuple(hit) for hit in tr.hits]
+            if any(hit in usedHits for hit in hit_tuples):
+                continue
+
+            finalTracks.append(tr)
+            usedHits.update(hit_tuples)
+
         return finalTracks
+
 
 
 
     def printHits(self, ev):
 
         print('---------------------List of hits------------------------')
-        for i, det in enumerate(ev.det):
-            print('det:', ev.det[i], 'layer:', ev.layer[i], 'x:', ev.x[i], 'y:', ev.y[i], 'z:', ev.z[i], 't:', ev.toa[i], 'genTrack:', ev.genTrackID[i], 'genID:', ev.genID[i])
+#        for i, det in enumerate(ev.det):
+#            print('det:', ev.det[i], 'layer:', ev.layer[i], 'x:', ev.x[i], 'y:', ev.y[i], 'z:', ev.z[i], 't:', ev.toa[i], 'genTrack:', ev.genTrackID[i], 'genID:', ev.genID[i])
 

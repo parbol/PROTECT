@@ -9,28 +9,43 @@ def time_at_z0(track):
 
 
 def match_by_time(tracks1, tracks2):
-    time_pairs = []
-    used = set()
-    max_dt = 0.5
-    for t1 in tracks1:
-        t1_time = time_at_z0(t1)
-        best_t2 = None
-        min_dt = float("inf")
-        for i, t2 in enumerate(tracks2):
-            if i in used:
-                continue
-            t2_time = time_at_z0(t2)
-            dt = abs(t1_time - t2_time)
-            if dt < min_dt and dt < max_dt:
-                min_dt = dt
-                best_t2 = i
+    
+    max_dt = 1.5
+    
+    theElement = (0)
+    tracks = [tracks1, tracks2]
+    cartesian = itertools.product(*tracks)
+    newlist = []
+    print('===============================')
+    for element in cartesian:
+        t1 = time_at_z0(element[0])
+        t2 = time_at_z0(element[1])
+        print('Det1:', element[0].genTrackID, 'Det2:', element[1].genTrackID, 'DT:', abs(t1-t2)) 
+        print('Track 1 hits')
+        for h in element[0].hits:
+            print(h[5])
+        print('Track 2 hits')
+        for h in element[1].hits:
+            print(h[5])
 
-        if best_t2 is not None:
-            time_pairs.append((t1, tracks2[best_t2]))
-            used.add(best_t2)
-        print(f"best time for is {min_dt}")
-    return time_pairs
+        if abs(t1-t2) > max_dt:
+            continue
+        if not element[0].isGenTrack() or not element[1].isGenTrack():
+            continue
+        newlist.append([element[0], element[1], abs(t1-t2)])
+    sortedList = sorted(newlist, key=lambda element: element[2])
+    usedTracks1 = set()
+    usedTracks2 = set()
+    finalList = []
+    for tr in sortedList:
+        if tr[0] in usedTracks1 or tr[1] in usedTracks2:
+            continue
+        print('Det 1 gen track id', tr[0].genTrackID, 'matches Det 2 gen track id', tr[1].genTrackID, 'Time', tr[2])
+        finalList.append([tr[0], tr[1]])
+        usedTracks1.add(tr[0])
+        usedTracks2.add(tr[1])
 
+    return finalList
 
 
 def efficiency(pairs):
@@ -40,7 +55,7 @@ def efficiency(pairs):
         if hasattr(t1, 'genTrackID') and hasattr(t2, 'genTrackID'):
             if t1.genTrackID == t2.genTrackID:
                 correct += 1
-        print(f"Match genTrackID1 = {getattr(t1, 'genTrackID')}, genTrackID2 = {getattr(t2, 'genTrackID')}")
+#        print(f"Match genTrackID1 = {getattr(t1, 'genTrackID')}, genTrackID2 = {getattr(t2, 'genTrackID')}")
     return correct / total if total > 0 else 0
 
 

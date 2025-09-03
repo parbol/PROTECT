@@ -33,8 +33,11 @@ class Track:
             return False
         gTr = self.hits[0][5] 
         gID = self.hits[0][6]
-        if gID != 2212:
-            return False
+#        if gID != 2212:
+#            return False
+        for h in self.hits:
+            if h[6] != 2212:
+                return False
         for h in self.hits:
             if gTr != h[5]:
                 return False
