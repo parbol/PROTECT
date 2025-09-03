@@ -7,9 +7,9 @@ class TrackFinder:
     def __init__(self, ev, nlayers):
 
 
-        self.printHits(ev)
         self.nGenTracks = max(ev.genTrackID)
         self.isValid = True
+        self.fullTrack = False
         self.tracks1 = []
         self.tracks2 = []
         layers1 = []
@@ -35,45 +35,49 @@ class TrackFinder:
                 layer1Complete = False
                 break
 
-
-#        if not layer2Complete:
-#            self.isValid = False
-#        else:
         if layer1Complete:
             self.tracks1 = self.runDetector(layers1, ev)
         if layer2Complete:
             self.tracks2 = self.runDetector(layers2, ev)
+        if len(self.tracks1) != 0 and len(self.tracks2) != 0:
+            self.fullTrack = True
         if len(self.tracks2) == 0:
             self.isValid = False
 
-    """
-    def makeAssociation(self, tracks1, tracks2):
 
-        thresholdScore = 1.0
-        for i, tr in enumerate(tracks2):
-            tr.associator = i
-        if len(tracks1) != 0:
-            for i, tr2 in enumerate(tracks2):
-                for j, tr1 in enumerate(tracks1):
-                    if i == j:
-                        continue
-                    score = self.compatibility(tr1, tr2)
-                    if score > thresholdScore:
-                        continue
+    def time_at_z0(self, track):
+          
+        time = track.t0 + (-track.z0) / (track.bz)
+        return time
 
+    def match_by_time(self):
 
-    def addHitToList(self, listOfHits, track):
+        max_dt = 1.5
+        theElement = (0)
+        tracks = [self.tracks1, self.tracks2]
+        cartesian = itertools.product(*tracks)
+        newlist = []
+        for element in cartesian:
+            t1 = self.time_at_z0(element[0])
+            t2 = self.time_at_z0(element[1])
 
-        newhits = []
-        for hit in track.hits:
-            if hit not in listOfHits:
-                newhits.append(hit)
-            else:
-                return False
-        listOfHits.append(newhits)
-        return True
+            if abs(t1-t2) > max_dt:
+                continue
+      
+            newlist.append([element[0], element[1], abs(t1-t2)])
+  
+        sortedList = sorted(newlist, key=lambda element: element[2])
+        usedTracks1 = set()
+        usedTracks2 = set()
+        finalList = []
+        for tr in sortedList:
+             if tr[0] in usedTracks1 or tr[1] in usedTracks2:
+                 continue
+             finalList.append([tr[0], tr[1]])
+             usedTracks1.add(tr[0])
+             usedTracks2.add(tr[1])
+        return finalList
 
-    """
 
     def runDetector(self, layers, ev):
 
@@ -94,7 +98,6 @@ class TrackFinder:
         sortedTracks = sorted(tracks, key=lambda track: track.rmss)
         #Finally we remove tracks that are using hits that have been already used
         usedHits = set()
-#        listOfHits = []
         finalTracks = []
         for tr in sortedTracks:
             hit_tuples = [tuple(hit) for hit in tr.hits]
