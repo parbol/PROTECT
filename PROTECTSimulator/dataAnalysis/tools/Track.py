@@ -11,20 +11,23 @@ class Track:
         self.x0 = 0
         self.y0 = 0
         self.z0 = 0
-        self.t0 = 0
+        self.tmean = 0
         self.bx = 0
         self.by = 0
         self.bz = 0
         self.rmss = 0
-        self.rmst = 0
         self.p = 0
         self.genID = 0
         self.genTrackID = 0
         self.hits = []
+        self.det = 0
+        self.isGen = False
 
-    def insertHit(self, x, y, z, t, energy, genTrackID, genID):
+    def insertHit(self, x, y, z, t, energy, genTrackID, genID, det):
 
-        hit = [x, y, z, t, energy, genTrackID, genID]
+        if len(self.hits) == 0:
+            self.det = det
+        hit = [x, y, z, t, energy, genTrackID, genID, det]
         self.hits.append(hit)
 
     def isGenTrack(self):
@@ -33,8 +36,6 @@ class Track:
             return False
         gTr = self.hits[0][5] 
         gID = self.hits[0][6]
-#        if gID != 2212:
-#            return False
         for h in self.hits:
             if h[6] != 2212:
                 return False
@@ -45,52 +46,55 @@ class Track:
 
     def build(self):
 
+        self.isGen = self.isGenTrack()
         x = y = z = t = 0.
-        z2 = 0.
-        xz = yz = tz = 0.
+        t2 = 0.
+        xt = yt = zt = 0.
 
         for h in self.hits:
             x = x + h[0]
-            xz = xz + h[0] * h[2]
+            xt = xt + h[0] * h[3]
             y = y + h[1]
-            yz = yz + h[1] * h[2]
-            t = t + h[3]
-            tz = tz + h[3] * h[2]
+            yt = yt + h[1] * h[3]
             z = z + h[2]
-            z2 = z2 + h[2]**2
-        x = x/len(self.hits)
-        xz = xz/len(self.hits)
-        y = y/len(self.hits)
-        yz = yz/len(self.hits)
-        t = t/len(self.hits)
-        tz = tz/len(self.hits)
-        z = z/len(self.hits)
-        z2 = z2/len(self.hits)
-        deltaz = z2 - z*z
-        alphax = (xz - x * z) / deltaz
-        alphay = (yz - y * z) / deltaz
-        alphat = (tz - t * z) / deltaz
+            zt = zt + h[2] * h[3]
+            t = t + h[3]
+            t2 = t2 + h[3]**2
         
-        self.x0 = x - alphax * z
-        self.y0 = y - alphay * z
-        self.t0 = t - alphat * z
-        self.z0 = 0
-        self.bx = (alphax/alphat) / self.c
-        self.by = (alphay/alphat) / self.c
-        self.bz = (1.0/alphat) / self.c
+        x = x/len(self.hits)
+        xt = xt/len(self.hits)
+        y = y/len(self.hits)
+        yt = yt/len(self.hits)
+        z = z/len(self.hits)
+        zt = zt/len(self.hits)
+        t = t/len(self.hits)
+        t2 = t2/len(self.hits)
+        
+        deltat = t2 - t*t
+        alphax = (xt - x * t) / deltat
+        alphay = (yt - y * t) / deltat
+        alphaz = (zt - z * t) / deltat
+        
+        self.x0 = x - alphax * t
+        self.y0 = y - alphay * t
+        self.z0 = z - alphaz * t
+        self.t0 = 0
+        self.bx = alphax / self.c
+        self.by = alphay / self.c
+        self.bz = alphaz / self.c
+        self.tmean = t
         beta = math.sqrt(self.bx*self.bx+self.by*self.by+self.bz*self.bz)
         if beta >= 1.0:
             beta = -1
         else:
             gamma = 1.0/math.sqrt(1.0 - beta*beta)
             self.p = beta * gamma * self.mp
-        xplus = yplus = tplus = 0.0
+        xplus = yplus = zplus = 0.0
         for h in self.hits:
-            xplus = xplus + (h[0]-self.x0-alphax*h[2])**2
-            yplus = yplus + (h[1]-self.y0-alphay*h[2])**2
-            tplus = tplus + (h[3]-self.t0-alphat*h[2])**2
-        self.rmss = math.sqrt((xplus+yplus)/len(self.hits))
-        self.rmst = math.sqrt(tplus/len(self.hits))
+            xplus = xplus + (h[0]-self.x0-alphax*h[3])**2
+            yplus = yplus + (h[1]-self.y0-alphay*h[3])**2
+            zplus = zplus + (h[2]-self.z0-alphaz*h[3])**2
+        self.rmss = math.sqrt((xplus+yplus+zplus)/len(self.hits))
         self.genID = self.hits[0][6]
         self.genTrackID = self.hits[0][5]
 

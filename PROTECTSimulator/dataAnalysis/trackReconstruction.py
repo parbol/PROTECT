@@ -41,13 +41,8 @@ if __name__ == '__main__':
     t = r.TTree('events', 'events') 
     nevent = array('i', [0]) 
     ntracks = array('i', [0])
-    x1 = array('f', NMax*[0]) 
-    y1 = array('f', NMax*[0]) 
-    z1 = array('f', NMax*[0]) 
-    t1 = array('f', NMax*[0]) 
-    vx1 = array('f', NMax*[0]) 
-    vy1 = array('f', NMax*[0]) 
-    vz1 = array('f', NMax*[0]) 
+    ngentracks = array('i', [0])
+    nmatchedtracks = array('i', [0])
     x2 = array('f', NMax*[0]) 
     y2 = array('f', NMax*[0]) 
     z2 = array('f', NMax*[0]) 
@@ -55,24 +50,14 @@ if __name__ == '__main__':
     vx2 = array('f', NMax*[0]) 
     vy2 = array('f', NMax*[0]) 
     vz2 = array('f', NMax*[0]) 
-    p1 = array('f', NMax*[0]) 
     p2 = array('f', NMax*[0]) 
-    chi1s = array('f', NMax*[0]) 
-    chi1t = array('f', NMax*[0]) 
     chi2s = array('f', NMax*[0]) 
-    chi2t = array('f', NMax*[0]) 
-    genID1 = array('i', NMax*[0])
     genID2 = array('i', NMax*[0])
  
     t.Branch('nevent', 'nevent', 'nevent/I') 
     t.Branch('ntracks', ntracks, 'ntracks/I') 
-    t.Branch('x1', x1, 'x1[ntracks]/F') 
-    t.Branch('y1', y1, 'y1[ntracks]/F') 
-    t.Branch('z1', z1, 'z1[ntracks]/F') 
-    t.Branch('t1', t1, 't1[ntracks]/F') 
-    t.Branch('vx1', vx1, 'vx1[ntracks]/F') 
-    t.Branch('vy1', vy1, 'vy1[ntracks]/F') 
-    t.Branch('vz1', vz1, 'vz1[ntracks]/F')
+    t.Branch('ngentracks', ngentracks, 'ngentracks/I') 
+    t.Branch('nmatchedtracks', nmatchedtracks, 'nmatchedtracks/I') 
     t.Branch('x2', x2, 'x2[ntracks]/F') 
     t.Branch('y2', y2, 'y2[ntracks]/F') 
     t.Branch('z2', z2, 'z2[ntracks]/F') 
@@ -80,49 +65,35 @@ if __name__ == '__main__':
     t.Branch('vx2', vx2, 'vx2[ntracks]/F') 
     t.Branch('vy2', vy2, 'vy2[ntracks]/F') 
     t.Branch('vz2', vz2, 'vz2[ntracks]/F')
-    t.Branch('p1', p1, 'p1[ntracks]/F')
     t.Branch('p2', p2, 'p2[ntracks]/F')
-    t.Branch('chi1s', chi1s, 'chi1s[ntracks]/F')
-    t.Branch('chi1t', chi1t, 'chi1t[ntracks]/F')
     t.Branch('chi2s', chi2s, 'chi2s[ntracks]/F')
-    t.Branch('chi2t', chi2t, 'chi2t[ntracks]/F')
-    t.Branch('genID1', genID1, 'genID1[ntracks]/I')
     t.Branch('genID2', genID2, 'genID2[ntracks]/I')
 
-
+    c = 0
     for ev in input.events:
 
+        print(c)
+        c = c + 1
         tf = TrackFinder(ev, 4)
-        if not tf.fullTrack:
+        if not tf.isValid:
             continue
-        trackColl = tf.match_by_time()
-        if len(trackColl) == 0:
-            continue
+       
         nevent[0] = ev.nevent
-        ntracks[0] = len(trackColl)
-        for i, tr in enumerate(trackColl):
-            x2[i] = tr[1].x0
-            y2[i] = tr[1].y0
-            z2[i] = tr[1].z0
-            t2[i] = tr[1].t0
-            vx2[i] = tr[1].bx
-            vy2[i] = tr[1].by
-            vz2[i] = tr[1].bz
-            p2[i] = tr[1].p
-            genID2[i] = tr[1].genID
-            chi2s[i] = tr[1].rmss
-            chi2t[i] = tr[1].rmst
-            x1[i] = tr[0].x0
-            y1[i] = tr[0].y0
-            z1[i] = tr[0].z0
-            t1[i] = tr[0].t0
-            vx1[i] = tr[0].bx
-            vy1[i] = tr[0].by
-            vz1[i] = tr[0].bz
-            p1[i] = tr[0].p
-            genID1[i] = tr[0].genID
-            chi1s[i] = tr[0].rmss
-            chi1t[i] = tr[0].rmst
+        ntracks[0] = len(tf.tracks2)
+        ngentracks[0] = tf.genTracks2
+        nmatchedtracks[0] = tf.matchedTracks2
+
+        for i, tr in enumerate(tf.tracks2):
+            x2[i] = tr.x0
+            y2[i] = tr.y0
+            z2[i] = tr.z0
+            t2[i] = tr.t0
+            vx2[i] = tr.bx
+            vy2[i] = tr.by
+            vz2[i] = tr.bz
+            p2[i] = tr.p
+            genID2[i] = tr.genID
+            chi2s[i] = tr.rmss
         
         t.Fill()
 
@@ -136,19 +107,7 @@ if __name__ == '__main__':
         reset(p2, ntracks[0])
         reset(genID2, ntracks[0])
         reset(chi2s, ntracks[0])
-        reset(chi2t, ntracks[0])
         
-        reset(x1, ntracks[0])
-        reset(y1, ntracks[0])
-        reset(z1, ntracks[0])
-        reset(t1, ntracks[0])
-        reset(vx1, ntracks[0])
-        reset(vy1, ntracks[0])
-        reset(vz1, ntracks[0])
-        reset(p1, ntracks[0])
-        reset(genID1, ntracks[0])
-        reset(chi1s, ntracks[0])
-        reset(chi1t, ntracks[0])
     output.Write()
     output.Close()
     input.Close()

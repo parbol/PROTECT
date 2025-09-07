@@ -6,12 +6,17 @@ class TrackFinder:
 
     def __init__(self, ev, nlayers):
 
-
+        
         self.nGenTracks = max(ev.genTrackID)
         self.isValid = True
         self.fullTrack = False
         self.tracks1 = []
         self.tracks2 = []
+        self.genTracks1 = 0
+        self.genTracks2 = 0
+        self.matchedTracks1 = 0
+        self.matchedTracks2 = 0
+        self.genTracks2 = 0
         layers1 = []
         layers2 = []
         for i in range(0, nlayers):
@@ -23,7 +28,6 @@ class TrackFinder:
                 layers1[ev.layer[i]].append(i)
             if ev.det[i] == 1:
                 layers2[ev.layer[i]].append(i)
-
         layer1Complete = True
         layer2Complete = True
         for l in layers2:
@@ -34,37 +38,49 @@ class TrackFinder:
             if len(l) == 0:
                 layer1Complete = False
                 break
-
         if layer1Complete:
-            self.tracks1 = self.runDetector(layers1, ev)
+            self.tracks1, self.genTracks1 = self.runDetector(layers1, ev)
+            self.matchedTracks1 = 0
+            for t in self.tracks1:
+                if t.isGen:
+                    self.matchedTracks1 += 1
         if layer2Complete:
-            self.tracks2 = self.runDetector(layers2, ev)
+            self.tracks2, self.genTracks2 = self.runDetector(layers2, ev)
+            self.matchedTracks2 = 0
+            for t in self.tracks2:
+                if t.isGen:
+                    self.matchedTracks2 += 1
         if len(self.tracks1) != 0 and len(self.tracks2) != 0:
             self.fullTrack = True
         if len(self.tracks2) == 0:
             self.isValid = False
 
-
-    def time_at_z0(self, track):
+    def deltaX(self, track1, track2):
           
-        time = track.t0 + (-track.z0) / (track.bz)
-        return time
+        t = (track1.tmean + track2.tmean)/2.0
+        x1 = track1.x0 + track1.bx * track1.c * t
+        y1 = track1.y0 + track1.by * track1.c * t
+        z1 = track1.z0 + track1.bz * track1.c * t
+        x2 = track2.x0 + track2.bx * track2.c * t
+        y2 = track2.y0 + track2.by * track2.c * t
+        z2 = track2.z0 + track2.bz * track2.c * t
 
-    def match_by_time(self):
+        deltax = (x1-x2)**2 + (y1-y2)**2 + (z1-z2)**2
+        return deltax
 
-        max_dt = 1.5
+    def matchTracks(self):
+
+        max_dx = 5
         theElement = (0)
         tracks = [self.tracks1, self.tracks2]
         cartesian = itertools.product(*tracks)
         newlist = []
         for element in cartesian:
-            t1 = self.time_at_z0(element[0])
-            t2 = self.time_at_z0(element[1])
-
-            if abs(t1-t2) > max_dt:
+            
+            dx = self.deltaX(element[0], element[1])
+            if dx > max_dx:
                 continue
-      
-            newlist.append([element[0], element[1], abs(t1-t2)])
+            newlist.append([element[0], element[1], dx])
   
         sortedList = sorted(newlist, key=lambda element: element[2])
         usedTracks1 = set()
@@ -83,16 +99,24 @@ class TrackFinder:
 
         tracks = []
         #First we make all the possible tracks with chi2 smaller than a given threshold
-        rmssthreshold = 1.0 #cm
-        rmstthreshold = 0.22 #ns
+        rmssthreshold1 = 0.69 #cm  3-sigma
+        rmssthreshold2 = 1.21 #cm  3-sigma
         theElement = (0)
         cartesian = itertools.product(*layers)
+        genTracks = 0
         for element in cartesian:
             t = Track()
             for layer in element:
-                t.insertHit(ev.x[layer], ev.y[layer], ev.z[layer], ev.toa[layer], ev.genEnergy[layer], ev.genTrackID[layer], ev.genID[layer])
+                t.insertHit(ev.x[layer], ev.y[layer], ev.z[layer], ev.toa[layer], ev.genEnergy[layer], ev.genTrackID[layer], ev.genID[layer], ev.det[layer])
             t.build()
-            if t.rmst < rmstthreshold and t.rmss < rmssthreshold:
+            if t.isGen:
+                genTracks += 1
+            rmssthreshold = 0
+            if t.det == 0:
+                rmssthreshold = rmssthreshold1
+            else:
+                rmssthreshold = rmssthreshold2
+            if t.rmss < rmssthreshold:
                 tracks.append(t)
         #We sort the list by chi2
         sortedTracks = sorted(tracks, key=lambda track: track.rmss)
@@ -106,8 +130,7 @@ class TrackFinder:
 
             finalTracks.append(tr)
             usedHits.update(hit_tuples)
-
-        return finalTracks
+        return finalTracks, genTracks
 
 
 
