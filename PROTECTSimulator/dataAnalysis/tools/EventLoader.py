@@ -29,12 +29,12 @@ class EventLoader:
         for ev in f.hits:
             if event != ev.eventNumber:
                 newEvent = Event(ev.eventNumber, geomConversor)
-                newEvent.add(ev.det, ev.layer, ev.lgad, ev.xpad, ev.ypad, ev.toa, ev.tot, ev.charge, ev.genEnergy, ev.gentoa, ev.genx, ev.geny, ev.genz, ev.genID)
+                newEvent.add(ev.det, ev.layer, ev.lgad, ev.xpad, ev.ypad, ev.toa, ev.tot, ev.charge, ev.genEnergy, ev.gentoa, ev.genx, ev.geny, ev.genz, ev.genID, ev.genTrackID)
                 events.append(newEvent)
                 event = ev.eventNumber
                 counter = counter + 1
             else:
-                events[counter].add(ev.det, ev.layer, ev.lgad, ev.xpad, ev.ypad, ev.toa, ev.tot, ev.charge, ev.genEnergy, ev.gentoa, ev.genx, ev.geny, ev.genz, ev.genID)
+                events[counter].add(ev.det, ev.layer, ev.lgad, ev.xpad, ev.ypad, ev.toa, ev.tot, ev.charge, ev.genEnergy, ev.gentoa, ev.genx, ev.geny, ev.genz, ev.genID, ev.genTrackID)
 
         f.Close()
         return events

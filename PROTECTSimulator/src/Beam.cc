@@ -15,9 +15,14 @@ Beam::Beam(ConfigurationGeometry *g, CLHEP::HepRandomEngine* MyRndEngine_) {
     step = 2.0 * myGeom->GetMaxOpenAngle() / (G4double) myGeom->GetNStep();
     MyRndEngine = MyRndEngine_;
     myGauss = new CLHEP::RandGauss(MyRndEngine);
-    rot.rotateY(g->GetYDirBeam());
-    rot.rotateX(g->GetXDirBeam());
-
+    G4RotationMatrix auxrot;
+    auxrot.rotateX(g->GetXDirBeam());
+    auxrot.rotateY(g->GetYDirBeam());
+    rot = auxrot.inverse();
+    G4cout << "--------------------" << G4endl;
+    G4cout << "rot: " << rot.xx() << " " << rot.xy() << " " << rot.xz() << G4endl;
+    G4cout << "rot: " << rot.yx() << " " << rot.yy() << " " << rot.yz() << G4endl;
+    G4cout << "rot: " << rot.zx() << " " << rot.zy() << " " << rot.zz() << G4endl;
 }
 //----------------------------------------------------------------------//
 //----------------------------------------------------------------------//

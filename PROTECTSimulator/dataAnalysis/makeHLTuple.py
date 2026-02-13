@@ -27,7 +27,6 @@ if __name__ == '__main__':
  
     loader = EventLoader(opts.inputFile, opts.configurationFile)
     events = loader.loadEvents()
-    
     try:
         output = r.TFile(opts.outputFile, 'RECREATE')
     except:
@@ -36,7 +35,7 @@ if __name__ == '__main__':
 
 
     t = r.TTree('events', 'events')
-    Nmax = 15
+    Nmax = 100 
     Nmin = 0
     nhits = array('i', [0])
     nevent = array('i', [0])
@@ -52,6 +51,7 @@ if __name__ == '__main__':
     genEnergy = array('f', Nmax*[0])
     gentoa = array('f', Nmax*[0])
     genID = array('i', Nmax*[0])
+    genTrackID = array('i', Nmax*[0])
     x = array('f', Nmax*[0])
     y = array('f', Nmax*[0])
     z = array('f', Nmax*[0])
@@ -76,6 +76,7 @@ if __name__ == '__main__':
     t.Branch('genEnergy', genEnergy, 'genEnergy[nhits]/F')
     t.Branch('gentoa', gentoa, 'gentoa[nhits]/F')
     t.Branch('genID', genID, 'genID[nhits]/I')
+    t.Branch('genTrackID', genTrackID, 'genTrackID[nhits]/I')
     t.Branch('x', x, 'x[nhits]/F')
     t.Branch('y', y, 'y[nhits]/F')
     t.Branch('z', z, 'z[nhits]/F')
@@ -107,6 +108,7 @@ if __name__ == '__main__':
         insert(genEnergy, ev.genEnergy, Nmax)
         insert(gentoa, ev.gentoa, Nmax)
         insert(genID, ev.genID, Nmax)
+        insert(genTrackID, ev.genTrackID, Nmax)
         insert(x, ev.x, Nmax)
         insert(y, ev.y, Nmax)
         insert(z, ev.z, Nmax)

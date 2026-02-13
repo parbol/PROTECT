@@ -93,8 +93,10 @@ if __name__=='__main__':
 
     #phantoms = []
 
-    theBeam['xDir'] = 0.0;
-    theBeam['yDir'] = 0.0;
+    Yrot = 0.0
+    Xrot = 45.0
+    theBeam['xDir'] = Xrot
+    theBeam['yDir'] = Yrot
 
 
     data = {} 
@@ -105,16 +107,17 @@ if __name__=='__main__':
 
     
     #This must be configured for every setup 
-    Yrot = 45.0
-    Xrot = 0.0
     Yrotr = Yrot * math.pi/180.0
     Xrotr = Xrot * math.pi/180.0
     z1 = 70.0
     v1y = [-math.sin(Yrotr) * z1, 0, math.cos(Yrotr) * z1]
-    v1 = [v1y[0], -math.sin(Xrotr) * v1y[2], math.cos(Xrotr) * v1y[2]]
+    v1 = [v1y[0], math.sin(Xrotr)*v1y[2], math.cos(Xrotr) * v1y[2]]
     z2 = -70.0
     v2y = [-math.sin(Yrotr) * z2, 0, math.cos(Yrotr) * z2]
-    v2 = [v2y[0], -math.sin(Xrotr) * v2y[2], math.cos(Xrotr) * v2y[2]]
+    v2 = [v2y[0], math.sin(Xrotr)*v2y[2], math.cos(Xrotr) * v2y[2]]
+
+    print(v1y, v1)
+    print(v2y, v2)
 
     detectorXPosition = [v1[0], v2[0]]
     detectorYPosition = [v1[1], v2[1]]

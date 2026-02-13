@@ -19,6 +19,7 @@ class Event:
         self.gentoa = []
         self.genEnergy = []
         self.genID = []
+        self.genTrackID = []
         self.localgenx = []
         self.localgeny = []
         self.localgenz = []
@@ -30,7 +31,7 @@ class Event:
         self.genz = []
         self.charge = []
 
-    def add(self, det_, layer_, lgad_, xpad_, ypad_, toa_, tot_, charge_, genEnergy_, gentoa_, genx_, geny_, genz_, genID_):
+    def add(self, det_, layer_, lgad_, xpad_, ypad_, toa_, tot_, charge_, genEnergy_, gentoa_, genx_, geny_, genz_, genID_, genTrackID_):
         
         self.det.append(det_)
         self.layer.append(layer_)
@@ -53,6 +54,7 @@ class Event:
         self.localgeny.append(geny_)
         self.localgenz.append(genz_)
         self.genID.append(genID_)
+        self.genTrackID.append(genTrackID_)
         x, y, z = self.geomConversor.toGlobalMeasurement(det_, layer_, lgad_, xpad_, ypad_)
         genx, geny, genz = self.geomConversor.toGlobal(det_, layer_, lgad_, xpad_, ypad_, genx_, geny_, genz_)
         self.x.append(x)
