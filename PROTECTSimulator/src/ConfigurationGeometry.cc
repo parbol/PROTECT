@@ -78,8 +78,8 @@ ConfigurationGeometry::ConfigurationGeometry(G4String file) {
         xBeamDir = atof(root["theBeam"]["xDir"].asString().c_str()) * CLHEP::degree;
         yBeamDir = atof(root["theBeam"]["yDir"].asString().c_str()) * CLHEP::degree;
         zBeamDir = atof(root["theBeam"]["zDir"].asString().c_str()) * CLHEP::degree;
-        p = atof(root["theBeam"]["momentum"].asString().c_str());
-        pSigma = atof(root["theBeam"]["momentumSigma"].asString().c_str());
+        energy = atof(root["theBeam"]["energy"].asString().c_str());
+        energySigma = atof(root["theBeam"]["energySigma"].asString().c_str());
         tBeamSigma = atof(root["theBeam"]["tBeamSigma"].asString().c_str());
         maxOpenAngle = atof(root["theBeam"]["maxOpenAngle"].asString().c_str());
         nParticles = atoi(root["theBeam"]["nParticles"].asString().c_str());
@@ -89,10 +89,10 @@ ConfigurationGeometry::ConfigurationGeometry(G4String file) {
         } else {
             particleDistribution = 0;
         }
-        if(root["theBeam"]["nParticles"].asString().find("Gauss") != -1) {
-            momentumDistribution = 2;
+        if(root["theBeam"]["energyDistribution"].asString().find("Gauss") != -1) {
+            energyDistribution = 2;
         } else {
-            momentumDistribution = 0;
+            energyDistribution = 0;
         }
 
 
@@ -364,8 +364,8 @@ G4double ConfigurationGeometry::GetZDirBeam() {
 //----------------------------------------------------------------------//
 // Accesor to class information                                         //
 //----------------------------------------------------------------------//
-G4double ConfigurationGeometry::GetMomentum() {
-    return p;
+G4double ConfigurationGeometry::GetEnergy() {
+    return energy;
 }
 //----------------------------------------------------------------------//
 //----------------------------------------------------------------------//
@@ -374,8 +374,8 @@ G4double ConfigurationGeometry::GetMomentum() {
 //----------------------------------------------------------------------//
 // Accesor to class information                                         //
 //----------------------------------------------------------------------//
-G4double ConfigurationGeometry::GetMomentumSigma() {
-    return pSigma;
+G4double ConfigurationGeometry::GetEnergySigma() {
+    return energySigma;
 }
 //----------------------------------------------------------------------//
 //----------------------------------------------------------------------//
@@ -424,8 +424,8 @@ G4int ConfigurationGeometry::GetNStep() {
 //----------------------------------------------------------------------//
 // Accesor to class information                                         //
 //----------------------------------------------------------------------//
-G4int ConfigurationGeometry::GetMomentumDistribution() {
-    return momentumDistribution;
+G4int ConfigurationGeometry::GetEnergyDistribution() {
+    return energyDistribution;
 }
 //----------------------------------------------------------------------//
 //----------------------------------------------------------------------//

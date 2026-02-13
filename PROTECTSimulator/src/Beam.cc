@@ -1,5 +1,6 @@
 #include "Beam.hh"
 #include "G4ThreeVector.hh"
+#include "math.h"
 
 //----------------------------------------------------------------------//
 // Constructor                                                          //
@@ -19,10 +20,6 @@ Beam::Beam(ConfigurationGeometry *g, CLHEP::HepRandomEngine* MyRndEngine_) {
     auxrot.rotateX(g->GetXDirBeam());
     auxrot.rotateY(g->GetYDirBeam());
     rot = auxrot.inverse();
-    G4cout << "--------------------" << G4endl;
-    G4cout << "rot: " << rot.xx() << " " << rot.xy() << " " << rot.xz() << G4endl;
-    G4cout << "rot: " << rot.yx() << " " << rot.yy() << " " << rot.yz() << G4endl;
-    G4cout << "rot: " << rot.zx() << " " << rot.zy() << " " << rot.zz() << G4endl;
 }
 //----------------------------------------------------------------------//
 //----------------------------------------------------------------------//
@@ -52,13 +49,17 @@ G4int Beam::GetNParticles() {
 std::vector<G4double> Beam::fireParticle() {
 
     std::vector<G4double> vect;
-    G4double p; 
+    const G4double protonmass = 938.27208943 * CLHEP::MeV;
+    G4double k; 
     //Gauss
-    if(myGeom->GetMomentumDistribution() == 2) {
-        p = myGauss->fire(myGeom->GetMomentum(), myGeom->GetMomentumSigma()) * CLHEP::MeV;
+    if(myGeom->GetEnergyDistribution() == 2) {
+        k = myGauss->fire(myGeom->GetEnergy(), myGeom->GetEnergySigma()) * CLHEP::MeV;
     } else{
-        p = myGeom->GetMomentum() * CLHEP::MeV;
+        k = myGeom->GetEnergy() * CLHEP::MeV;
     }
+    G4double e = k + protonmass;
+    G4double p = sqrt(e*e - protonmass*protonmass);
+ 
     G4double x = myGauss->fire(myGeom->GetXBeamPosition(), myGeom->GetXBeamSigma()) * CLHEP::cm;
     G4double y = myGauss->fire(myGeom->GetYBeamPosition(), myGeom->GetYBeamSigma()) * CLHEP::cm;
     G4double z = myGeom->GetZBeamPosition() * CLHEP::cm;     
