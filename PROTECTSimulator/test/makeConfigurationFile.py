@@ -91,10 +91,10 @@ if __name__=='__main__':
     phantoms[3]['radius'] = 2.0
     phantoms[3]['zsize'] = 0.5
 
-    phantoms = []
+    #phantoms = []
 
     Yrot = 0.0
-    Xrot = 0.0
+    Xrot = 45.0
     theBeam['xDir'] = Xrot
     theBeam['yDir'] = Yrot
 

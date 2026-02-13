@@ -17,7 +17,7 @@
 	"zDir": 0.0,
         "maxOpenAngle": 0.02,
         "nStep": 100,
-        "nParticles": 5,
+        "nParticles": 1,
         "nParticlesDistribution": "Constant",
         "momentum": 250,
         "momentumSigma": 1,

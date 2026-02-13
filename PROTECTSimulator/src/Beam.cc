@@ -19,7 +19,10 @@ Beam::Beam(ConfigurationGeometry *g, CLHEP::HepRandomEngine* MyRndEngine_) {
     auxrot.rotateX(g->GetXDirBeam());
     auxrot.rotateY(g->GetYDirBeam());
     rot = auxrot.inverse();
-
+    G4cout << "--------------------" << G4endl;
+    G4cout << "rot: " << rot.xx() << " " << rot.xy() << " " << rot.xz() << G4endl;
+    G4cout << "rot: " << rot.yx() << " " << rot.yy() << " " << rot.yz() << G4endl;
+    G4cout << "rot: " << rot.zx() << " " << rot.zy() << " " << rot.zz() << G4endl;
 }
 //----------------------------------------------------------------------//
 //----------------------------------------------------------------------//

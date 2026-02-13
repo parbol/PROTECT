@@ -69,11 +69,8 @@ if __name__ == '__main__':
     t.Branch('chi2s', chi2s, 'chi2s[ntracks]/F')
     t.Branch('genID2', genID2, 'genID2[ntracks]/I')
 
-    c = 0
     for ev in input.events:
 
-        print(c)
-        c = c + 1
         tf = TrackFinder(ev, 4)
         if not tf.isValid:
             continue

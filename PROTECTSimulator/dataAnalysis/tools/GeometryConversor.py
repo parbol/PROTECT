@@ -1,7 +1,7 @@
 import json, sys, optparse
 import ROOT as r
 from array import array
-
+import math
 
 
 class GeometryConversor:
@@ -14,34 +14,44 @@ class GeometryConversor:
         except:
             print('Configuration file is not valid')
             sys.exit()
+        self.anglex = float(self.data['theBeam']['xDir']) * math.pi/180.0 
         cinput.close()
 
         
     def toGlobal(self, det, layer, lgad, xpad, ypad, x, y, z):
 
         #This method is still hardcoded for a vertical detector 
-        xdet = self.data['Detectors'][det]['xPosDetector']        
-        ydet = self.data['Detectors'][det]['yPosDetector']
-        zdet = self.data['Detectors'][det]['zPosDetector']
+        xdet_ = self.data['Detectors'][det]['xPosDetector']        
+        ydet_ = self.data['Detectors'][det]['yPosDetector']
+        zdet_ = self.data['Detectors'][det]['zPosDetector']
         xlayer = self.data['Detectors'][det]['Layers'][layer]['xPosLayer']
         ylayer = self.data['Detectors'][det]['Layers'][layer]['yPosLayer']
         zlayer = self.data['Detectors'][det]['Layers'][layer]['zPosLayer']
         xlgad = self.data['Detectors'][det]['Layers'][layer]['Sensors'][lgad]['xPosSensor']
         ylgad = self.data['Detectors'][det]['Layers'][layer]['Sensors'][lgad]['yPosSensor']
         zlgad = self.data['Detectors'][det]['Layers'][layer]['Sensors'][lgad]['zPosSensor']
+       
+        xdet = xdet_
+        ydet = math.cos(self.anglex) * ydet_ - math.sin(self.anglex) * zdet_
+        zdet = math.sin(self.anglex) * ydet_ + math.cos(self.anglex) * zdet_
+ 
+        realx_ = x + xdet + xlayer + xlgad    
+        realy_ = y + ydet + ylayer + ylgad   
+        realz_ = z + zdet + zlayer + zlgad
         
-        realx = x + xdet + xlayer + xlgad    
-        realy = y + ydet + ylayer + ylgad   
-        realz = z + zdet + zlayer + zlgad
+        realx = realx_
+        realy = math.cos(self.anglex) * realy_ + math.sin(self.anglex) * realz_
+        realz = -math.sin(self.anglex) * realy_ + math.cos(self.anglex) * realz_
+
 
         return realx, realy, realz 
 
     def toGlobalMeasurement(self, det, layer, lgad, xpad, ypad):
 
         #This method is still hardcoded for a vertical detector 
-        xdet = self.data['Detectors'][det]['xPosDetector']        
-        ydet = self.data['Detectors'][det]['yPosDetector']
-        zdet = self.data['Detectors'][det]['zPosDetector']
+        xdet_ = self.data['Detectors'][det]['xPosDetector']        
+        ydet_ = self.data['Detectors'][det]['yPosDetector']
+        zdet_ = self.data['Detectors'][det]['zPosDetector']
         xlayer = self.data['Detectors'][det]['Layers'][layer]['xPosLayer']
         ylayer = self.data['Detectors'][det]['Layers'][layer]['yPosLayer']
         zlayer = self.data['Detectors'][det]['Layers'][layer]['zPosLayer']
@@ -56,9 +66,18 @@ class GeometryConversor:
         nPady = self.data['Detectors'][det]['Layers'][layer]['Sensors'][lgad]['nPady']
         padsizex = (xsize - 2.0*xborder)/nPadx
         padsizey = (ysize - 2.0*yborder)/nPady
-        realx = xdet + xlayer + xlgad + xborder - xsize / 2.0 + padsizex/2.0 + xpad * padsizex 
-        realy = ydet + ylayer + ylgad + yborder - ysize / 2.0 + padsizey/2.0 + ypad * padsizey 
-        realz = zdet + zlayer + zlgad
+        
+        xdet = xdet_
+        ydet = math.cos(self.anglex) * ydet_ - math.sin(self.anglex) * zdet_
+        zdet = math.sin(self.anglex) * ydet_ + math.cos(self.anglex) * zdet_
+        
+        realx_ = xdet + xlayer + xlgad + xborder - xsize / 2.0 + padsizex/2.0 + xpad * padsizex 
+        realy_ = ydet + ylayer + ylgad + yborder - ysize / 2.0 + padsizey/2.0 + ypad * padsizey 
+        realz_ = zdet + zlayer + zlgad
+       
+        realx = realx_
+        realy = math.cos(self.anglex) * realy_ + math.sin(self.anglex) * realz_
+        realz = -math.sin(self.anglex) * realy_ + math.cos(self.anglex) * realz_
 
         return realx, realy, realz 
 
